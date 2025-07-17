@@ -5,6 +5,7 @@ import Register from "../Pages/Register";
 import Login from "../Pages/Login";
 import OTPVerification from "../Pages/OTPVerification";
 import Dashboard from "../Pages/Dashboard";
+import ProfilePage from "../Pages/ProfilePage";
 
 const Router = () => {
   return (
@@ -15,6 +16,7 @@ const Router = () => {
         <Route path="/register" element={<Register />} />
         <Route path="/verify" element={<OTPVerification />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/profile" element={<ProfilePage />} />
       </Routes>
     </BrowserRouter>
   );
