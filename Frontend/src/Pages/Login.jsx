@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { FaRobot } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -61,7 +62,10 @@ const Login = () => {
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium mb-1">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium mb-1"
+            >
               Password
             </label>
             <div className="relative">
@@ -99,10 +103,7 @@ const Login = () => {
                 onChange={() => setRememberMe(!rememberMe)}
                 className="w-4 h-4 text-indigo-600 bg-gray-700 border-gray-600 rounded focus:ring-indigo-500"
               />
-              <label
-                htmlFor="remember"
-                className="ml-2 text-sm text-gray-400"
-              >
+              <label htmlFor="remember" className="ml-2 text-sm text-gray-400">
                 Remember me
               </label>
             </div>
@@ -126,12 +127,12 @@ const Login = () => {
 
         <div className="mt-6 text-center text-sm text-gray-400">
           Don't have an account?{" "}
-          <a
-            href="/register"
+          <Link
+            to="/register"
             className="text-indigo-400 hover:text-indigo-300 font-medium"
           >
             Create one
-          </a>
+          </Link>
         </div>
       </motion.div>
     </div>

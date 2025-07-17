@@ -15,6 +15,7 @@ import {
 } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { FaRobot, FaDiscord, FaTwitter } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const Welcome = () => {
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
@@ -397,18 +398,20 @@ const Welcome = () => {
                   FAQ
                 </a>
                 <div className="flex flex-col space-y-3 pt-4">
-                  <button
+                  <Link
+                    to="/login"
                     className="bg-gray-700 hover:bg-gray-600 text-white font-medium px-4 py-3 rounded-lg transition-all w-full"
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     Login
-                  </button>
-                  <button
+                  </Link>
+                  <Link
+                    to="/register"
                     className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-4 py-3 rounded-lg transition-all w-full"
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     Sign Up
-                  </button>
+                  </Link>
                 </div>
               </motion.div>
             </>
@@ -466,20 +469,18 @@ const Welcome = () => {
                 transition={{ delay: 0.6, duration: 0.8 }}
                 className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start"
               >
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                <Link
+                  to="/register"
                   className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-2.5 sm:px-8 sm:py-3 rounded-lg flex items-center justify-center transition-all text-sm sm:text-base"
                 >
                   Get Started <FiArrowRight className="ml-2" />
-                </motion.button>
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                </Link>
+                <Link
+                  to="/examples"
                   className="bg-gray-800 hover:bg-gray-700 text-white font-semibold px-6 py-2.5 sm:px-8 sm:py-3 rounded-lg flex items-center justify-center transition-all text-sm sm:text-base"
                 >
                   See Examples
-                </motion.button>
+                </Link>
               </motion.div>
 
               <motion.div
@@ -782,9 +783,7 @@ const Welcome = () => {
       {/* How It Works */}
       <section id="how-it-works" className="py-12 sm:py-16 md:py-20">
         <div className="container mx-auto px-4 sm:px-6">
-          <motion.div
-            className="text-center mb-8 sm:mb-12 md:mb-16"
-          >
+          <motion.div className="text-center mb-8 sm:mb-12 md:mb-16">
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">
               How It Works
             </h2>
