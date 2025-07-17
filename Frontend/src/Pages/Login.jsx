@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { FaRobot } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axiosInstance from "../config/Axios";
+import { toast, Bounce } from "react-toastify";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -12,6 +14,8 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
 
+  const Navigate = useNavigate();
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -20,10 +24,58 @@ const Login = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle login logic here
-    console.log("Login data:", formData);
+
+    try {
+      const response = await axiosInstance.post("/users/login", formData);
+
+      if (response.status === 200) {
+        toast.success(response.data.message, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+          transition: Bounce,
+        });
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("name", response.data.user.name);
+        localStorage.setItem("email", response.data.user.email);
+        Navigate("/dashboard");
+      }
+    } catch (error) {
+      toast.error(
+        error.response.data.message ||
+          error.response.data.errors.forEach((element) => {
+            toast.error(element.msg, {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: false,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "dark",
+              transition: Bounce,
+            });
+          }),
+        {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+          transition: Bounce,
+        }
+      );
+    }
   };
 
   return (
@@ -53,6 +105,7 @@ const Login = () => {
               type="email"
               id="email"
               name="email"
+              autoFocus
               value={formData.email}
               onChange={handleChange}
               required

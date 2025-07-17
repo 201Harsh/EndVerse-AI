@@ -33,7 +33,7 @@ module.exports.VerifyandCreateUser = async ({ email, otp }) => {
 
   const tempUser = await TempUserModel.findOne({ email });
   if (!tempUser) {
-    throw new Error("Invalid email or OTP");
+    throw new Error("User not found!!");
   }
 
   if (tempUser.otp !== otp) {
