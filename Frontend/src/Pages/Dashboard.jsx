@@ -7,24 +7,30 @@ import {
   FaTimes,
   FaBars,
   FaUser,
+  FaChevronLeft,
+  FaChevronRight,
+  FaHistory, 
+  FaImage, 
+  FaVideo, 
+  FaCog 
 } from "react-icons/fa";
 import { FiX, FiMenu } from "react-icons/fi";
 import { Link } from "react-router-dom";
+import ChatBox from "../Components/ChatBox";
 
 const Dashboard = () => {
   const [showFollowPopup, setShowFollowPopup] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(true); // Default open on desktop
   const [isMobile, setIsMobile] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false); // New state for collapsed sidebar
 
   useEffect(() => {
     // Check if mobile device
     const handleResize = () => {
       const mobile = window.innerWidth < 768;
       setIsMobile(mobile);
-      // On desktop, menu is always open
-      if (!mobile) {
-        setIsMenuOpen(true);
-      } else {
+      // On desktop, menu is controlled by isMenuOpen
+      if (mobile) {
         setIsMenuOpen(false);
       }
     };
@@ -50,6 +56,10 @@ const Dashboard = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  const toggleCollapse = () => {
+    setIsCollapsed(!isCollapsed);
+  };
+
   return (
     <div className="min-h-screen bg-gray-900 text-gray-100 relative overflow-hidden flex">
       {/* Sliding Sidebar Menu - Now on left side */}
@@ -59,25 +69,92 @@ const Dashboard = () => {
           animate={{ x: 0 }}
           exit={{ x: isMobile ? "-100%" : 0 }}
           transition={{ type: "tween", ease: "easeInOut" }}
-          className={`fixed md:relative inset-y-0 left-0 w-64 bg-gray-800/95 md:bg-gray-800/50 backdrop-blur-md z-50 md:z-0 shadow-2xl border-r border-gray-700`}
+          className={`fixed md:relative inset-y-0 left-0 ${
+            isCollapsed ? "w-16" : "w-64"
+          } bg-gray-800/95 md:bg-gray-800/50 backdrop-blur-md z-50 md:z-10 shadow-2xl border-r border-gray-700 transition-all duration-300`}
         >
           <div className="p-4 h-full flex flex-col">
-            {isMobile && (
-              <div className="flex justify-end">
+            <div className="flex justify-between items-center mb-4">
+              {!isCollapsed && (
+                <div className="flex items-center">
+                  <FaRobot className="w-8 h-8 text-indigo-400" />
+                  <h1 className="ml-2 text-xl font-bold">EndVerse</h1>
+                </div>
+              )}
+
+              {/* Close button for mobile, toggle button for desktop */}
+              {isMobile ? (
                 <button
                   onClick={toggleMenu}
-                  className="text-gray-300 hover:text-white p-2"
+                  className="text-gray-300 hover:text-white p-1"
                   aria-label="Close menu"
                 >
-                  <FiX className="w-6 h-6" />
+                  <FiX className="w-5 h-5" />
                 </button>
-              </div>
-            )}
+              ) : (
+                <button
+                  onClick={toggleCollapse}
+                  className="text-gray-300 hover:text-white p-1"
+                  aria-label="Toggle sidebar"
+                >
+                  {isCollapsed ? (
+                    <FaChevronRight className="w-5 h-5" />
+                  ) : (
+                    <FaChevronLeft className="w-5 h-5" />
+                  )}
+                </button>
+              )}
+            </div>
 
-            <div className="flex-1 flex flex-col justify-center items-center">
-              <button className="flex items-center justify-center w-full py-3 px-6 mb-4 bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-all">
-                <FaRobot className="mr-2" />
-                New Chat
+            <div className="flex-1 mt-16 flex flex-col justify-center items-center">
+              {/* New Chat Button */}
+              <button
+                className={`flex items-center justify-center ${
+                  isCollapsed ? "w-12 px-0" : "w-full px-6"
+                } py-3 mb-4 bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-all`}
+              >
+                <FaRobot className={isCollapsed ? "mx-auto" : "mr-2"} />
+                {!isCollapsed && "New Chat"}
+              </button>
+
+              {/* History Button */}
+              <button
+                className={`flex items-center justify-center ${
+                  isCollapsed ? "w-12 px-0" : "w-full px-6"
+                } py-3 mb-4 bg-gray-700 hover:bg-gray-600 rounded-lg transition-all`}
+              >
+                <FaHistory className={isCollapsed ? "mx-auto" : "mr-2"} />
+                {!isCollapsed && "History"}
+              </button>
+
+              {/* Image Generation Button */}
+              <button
+                className={`flex items-center justify-center ${
+                  isCollapsed ? "w-12 px-0" : "w-full px-6"
+                } py-3 mb-4 bg-purple-600 hover:bg-purple-700 rounded-lg transition-all`}
+              >
+                <FaImage className={isCollapsed ? "mx-auto" : "mr-2"} />
+                {!isCollapsed && "Generate Image"}
+              </button>
+
+              {/* Video Generation Button */}
+              <button
+                className={`flex items-center justify-center ${
+                  isCollapsed ? "w-12 px-0" : "w-full px-6"
+                } py-3 mb-4 bg-blue-600 hover:bg-blue-700 rounded-lg transition-all`}
+              >
+                <FaVideo className={isCollapsed ? "mx-auto" : "mr-2"} />
+                {!isCollapsed && "Generate Video"}
+              </button>
+
+              {/* Settings Button */}
+              <button
+                className={`flex items-center justify-center ${
+                  isCollapsed ? "w-12 px-0" : "w-full px-6"
+                } py-3 mb-4 bg-gray-800 hover:bg-gray-700 rounded-lg transition-all mt-auto`}
+              >
+                <FaCog className={isCollapsed ? "mx-auto" : "mr-2"} />
+                {!isCollapsed && "Settings"}
               </button>
             </div>
 
@@ -85,7 +162,9 @@ const Dashboard = () => {
             <div className="mt-auto pb-4">
               <Link
                 to="/profile"
-                className="flex items-center justify-center w-full py-2 px-4 text-gray-300 hover:text-white rounded-lg transition-all"
+                className={`flex items-center justify-center ${
+                  isCollapsed ? "w-10 px-0 bg-transparent" : "w-full px-4 bg-gray-800 hover:bg-gray-700"
+                } py-2 text-gray-300 hover:text-white rounded-lg transition-all mt-auto`}
               >
                 <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 overflow-hidden mr-2">
                   <img
@@ -94,40 +173,50 @@ const Dashboard = () => {
                     className="w-full h-full object-cover"
                   />
                 </div>
-                <span>My Profile</span>
+                {!isCollapsed && <span>My Profile</span>}
               </Link>
-              <div className="text-center text-xs text-gray-500 mt-2">
-                EndVerse AI v2.0
-              </div>
+              {!isCollapsed && (
+                <div className="text-center text-xs text-gray-500 mt-2">
+                  EndVerse AI v2.0
+                </div>
+              )}
             </div>
           </div>
         </motion.div>
       )}
 
       {/* Main Dashboard Content */}
-      <div className="flex-1">
+      <div
+        className={`flex-1 transition-all duration-300 ${
+          isCollapsed && !isMobile ? "ml-16" : "ml-0"
+        }`}
+      >
         <div className="container mx-auto px-4 py-8">
           {/* Header */}
           <header className="flex justify-between items-center mb-8">
             <div className="flex items-center">
-              <FaRobot className="w-8 h-8 text-indigo-400" />
-              <h1 className="ml-2 text-2xl font-bold">EndVerse AI</h1>
+              {isMobile && (
+                <button
+                  onClick={toggleMenu}
+                  className="mr-4 text-gray-300 hover:text-white p-1"
+                  aria-label="Toggle menu"
+                >
+                  <FiMenu className="w-6 h-6" />
+                </button>
+              )}
+              <h1 className="text-2xl font-bold">EndVerse AI</h1>
             </div>
 
-            {/* Mobile Menu Button - Only shows on mobile */}
-            {isMobile && (
+            {/* Desktop toggle button when sidebar is collapsed */}
+            {/* {!isMobile && isCollapsed && (
               <button
-                onClick={toggleMenu}
-                className="md:hidden text-gray-300 hover:text-white p-2"
-                aria-label="Toggle menu"
+                onClick={toggleCollapse}
+                className="text-gray-300 hover:text-white p-1"
+                aria-label="Expand sidebar"
               >
-                {isMenuOpen ? (
-                  <FiX className="w-6 h-6" />
-                ) : (
-                  <FiMenu className="w-6 h-6" />
-                )}
+                <FaChevronRight className="w-5 h-5" />
               </button>
-            )}
+            )} */}
           </header>
 
           {/* Main Content */}
@@ -210,6 +299,7 @@ const Dashboard = () => {
           </motion.div>
         )}
       </AnimatePresence>
+      <ChatBox />
     </div>
   );
 };
