@@ -317,7 +317,7 @@ const ChatDashboard = ({
               <form onSubmit={handleSubmit} className="max-w-4xl mx-auto">
                 <div className="relative flex items-center">
                   {/* File attachment button */}
-                  <button
+                  {/* <button
                     type="button"
                     onClick={triggerFileInput}
                     disabled={isTyping}
@@ -325,15 +325,15 @@ const ChatDashboard = ({
                     aria-label="Attach file"
                   >
                     <FaPaperclip className="w-5 h-5" />
-                  </button>
+                  </button> */}
 
-                  <input
+                  {/* <input
                     type="file"
                     ref={fileInputRef}
                     onChange={handleFileChange}
                     className="hidden"
                     accept=".pdf,.doc,.docx,.txt,.png,.jpg,.jpeg"
-                  />
+                  /> */}
 
                   {/* Text input */}
                   <textarea
@@ -346,7 +346,7 @@ const ChatDashboard = ({
                     disabled={isTyping}
                     className={`w-full ${darkMode ? 'bg-gray-700 text-white placeholder-gray-400' : 'bg-white text-gray-900 placeholder-gray-500'} border ${
                       isTyping ? 'border-indigo-500' : darkMode ? 'border-gray-600' : 'border-gray-300'
-                    } rounded-full py-3 pl-12 pr-16 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all resize-none max-h-32 overflow-hidden ${isTyping ? 'cursor-not-allowed' : ''}`}
+                    } rounded-full py-3 pl-5 pr-16 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all resize-none max-h-32 overflow-hidden ${isTyping ? 'cursor-not-allowed' : ''}`}
                     style={{ minHeight: '48px' }}
                   />
 

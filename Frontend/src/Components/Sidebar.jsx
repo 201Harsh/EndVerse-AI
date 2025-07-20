@@ -154,6 +154,7 @@ const Sidebar = ({
                   }`}
                 >
                   <Link
+                    to="/profile"
                     className={`w-full flex items-center p-3 rounded-lg transition ${
                       darkMode
                         ? "hover:bg-gray-700 text-gray-300"
@@ -290,7 +291,7 @@ const Sidebar = ({
           <button
             onClick={toggleDarkMode}
             className={`flex items-center ${
-              isCollapsed ? "justify-center p-3 w-10 h-10" : "p-3 w-full" 
+              isCollapsed ? "justify-center p-3 w-10 h-10" : "p-3 w-full"
             } rounded-lg transition ${
               darkMode
                 ? "hover:bg-gray-700 text-gray-300"
