@@ -171,7 +171,7 @@ const ChatDashboard = ({
                 className={`text-4xl font-bold mb-4 ${darkMode ? 'text-gray-200' : 'text-gray-800'}`}
               >
                 Hello{" "}
-                <span className="text-transparent bg-clip-text bg-gradient-to-tr from-pink-400 to-sky-500 font-bold">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-pink-500 leading-tight font-bold">
                   {userName}!
                 </span>
               </motion.h2>
