@@ -297,9 +297,9 @@ const ImageDashboard = ({ darkMode, toggleDarkMode, clearHistory }) => {
               whileTap={{ scale: credits > 0 && prompt.trim() ? 0.98 : 1 }}
               onClick={generateImage}
               disabled={!prompt.trim() || credits <= 0 || isGenerating}
-              className={`w-full py-3 rounded-lg font-bold flex items-center justify-center ${
+              className={`w-full py-3 rounded-lg font-bold flex items-center justify-center text-white ${
                 !prompt.trim() || credits <= 0 || isGenerating
-                  ? `${darkMode ? 'bg-gray-700' : 'bg-gray-200'} cursor-not-allowed`
+                  ? `${darkMode ? 'bg-gray-700' : 'bg-gray-700'} cursor-not-allowed`
                   : 'bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700'
               }`}
             >
@@ -521,7 +521,7 @@ const ImageDashboard = ({ darkMode, toggleDarkMode, clearHistory }) => {
           >
             <div className="relative max-w-full max-h-full">
               <button
-                className="absolute top-4 right-4 p-2 rounded-full bg-gray-800 hover:bg-gray-700 z-10"
+                className="absolute top-4 right-4 p-2 rounded-full bg-gray-500 hover:bg-gray-400 z-10"
                 onClick={(e) => {
                   e.stopPropagation();
                   setIsFullscreen(false);
