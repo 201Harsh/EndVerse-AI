@@ -12,9 +12,18 @@ import {
   FiChevronDown,
   FiChevronLeft,
   FiChevronRight,
+  FiSun,
+  FiMoon,
 } from "react-icons/fi";
 import { motion } from "framer-motion";
-import { FaRobot, FaDiscord, FaTwitter } from "react-icons/fa";
+import {
+  FaRobot,
+  FaDiscord,
+  FaTwitter,
+  FaGithub,
+  FaLinkedin,
+  FaYoutube,
+} from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 const Welcome = () => {
@@ -22,6 +31,8 @@ const Welcome = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [showcaseIndex, setShowcaseIndex] = useState(0);
+  const [activeFaq, setActiveFaq] = useState(null);
+  const [darkMode, setDarkMode] = useState(true);
 
   // Add viewport meta tag for mobile responsiveness
   useEffect(() => {
@@ -43,6 +54,14 @@ const Welcome = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const toggleFaq = (index) => {
+    setActiveFaq(activeFaq === index ? null : index);
+  };
+
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
+  };
 
   const features = [
     {
@@ -86,6 +105,12 @@ const Welcome = () => {
       title: "Twitter Integration",
       description:
         "Integrate EndVerse AI with your Twitter account for seamless interactions.",
+    },
+    {
+      icon: <FaGithub className="w-6 h-6" />,
+      title: "Developer API",
+      description:
+        "Build your own applications with our powerful developer API.",
     },
   ];
 
@@ -185,6 +210,16 @@ const Welcome = () => {
       answer:
         "EndVerse combines state-of-the-art language models with specialized image generation in one seamless interface. Our context retention is industry-leading, allowing for more natural, ongoing conversations.",
     },
+    {
+      question: "Do you offer educational discounts?",
+      answer:
+        "Yes! We offer special pricing for students and educators. Contact our support team with proof of your academic status to learn more.",
+    },
+    {
+      question: "How can I integrate EndVerse with my website?",
+      answer:
+        "We provide comprehensive API documentation and SDKs for popular platforms. Our developer resources make integration straightforward.",
+    },
   ];
 
   const showcaseItems = [
@@ -244,6 +279,40 @@ const Welcome = () => {
     },
   ];
 
+  const stats = [
+    { value: "10M+", label: "Daily Queries" },
+    { value: "500K+", label: "Active Users" },
+    { value: "99.9%", label: "Uptime" },
+    { value: "24/7", label: "Support" },
+  ];
+
+  const teamMembers = [
+    {
+      name: "Alex Johnson",
+      role: "CEO & Founder",
+      bio: "AI researcher with 10+ years experience in machine learning",
+      avatar: "https://randomuser.me/api/portraits/men/32.jpg",
+    },
+    {
+      name: "Sarah Williams",
+      role: "CTO",
+      bio: "Former Google engineer specializing in neural networks",
+      avatar: "https://randomuser.me/api/portraits/women/44.jpg",
+    },
+    {
+      name: "Michael Chen",
+      role: "Lead Developer",
+      bio: "Full-stack developer with expertise in AI integration",
+      avatar: "https://randomuser.me/api/portraits/men/75.jpg",
+    },
+    {
+      name: "Emily Davis",
+      role: "UX Designer",
+      bio: "Creates intuitive interfaces for complex AI systems",
+      avatar: "https://randomuser.me/api/portraits/women/68.jpg",
+    },
+  ];
+
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
@@ -272,12 +341,18 @@ const Welcome = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-100">
+    <div
+      className={`min-h-screen transition-colors duration-300 ${
+        darkMode ? "bg-gray-900 text-gray-100" : "bg-gray-50 text-gray-900"
+      }`}
+    >
       {/* Header */}
       <header
         className={`fixed w-full z-50 transition-all duration-300 ${
           scrolled
-            ? "bg-gray-900/95 backdrop-blur-md py-2"
+            ? `${
+                darkMode ? "bg-gray-900/95" : "bg-white/95"
+              } backdrop-blur-md py-2 shadow-sm`
             : "bg-transparent py-4"
         }`}
       >
@@ -294,33 +369,78 @@ const Welcome = () => {
             <nav className="hidden md:flex items-center space-x-6 lg:space-x-8">
               <a
                 href="#features"
-                className="text-gray-300 hover:text-white transition text-sm lg:text-base"
+                className={`${
+                  darkMode
+                    ? "text-gray-300 hover:text-white"
+                    : "text-gray-600 hover:text-gray-900"
+                } transition text-sm lg:text-base`}
               >
                 Features
               </a>
               <a
                 href="#how-it-works"
-                className="text-gray-300 hover:text-white transition text-sm lg:text-base"
+                className={`${
+                  darkMode
+                    ? "text-gray-300 hover:text-white"
+                    : "text-gray-600 hover:text-gray-900"
+                } transition text-sm lg:text-base`}
               >
                 How It Works
               </a>
               <a
                 href="#pricing"
-                className="text-gray-300 hover:text-white transition text-sm lg:text-base"
+                className={`${
+                  darkMode
+                    ? "text-gray-300 hover:text-white"
+                    : "text-gray-600 hover:text-gray-900"
+                } transition text-sm lg:text-base`}
               >
                 Pricing
               </a>
               <a
+                href="#team"
+                className={`${
+                  darkMode
+                    ? "text-gray-300 hover:text-white"
+                    : "text-gray-600 hover:text-gray-900"
+                } transition text-sm lg:text-base`}
+              >
+                Team
+              </a>
+              <a
                 href="#faq"
-                className="text-gray-300 hover:text-white transition text-sm lg:text-base"
+                className={`${
+                  darkMode
+                    ? "text-gray-300 hover:text-white"
+                    : "text-gray-600 hover:text-gray-900"
+                } transition text-sm lg:text-base`}
               >
                 FAQ
               </a>
-              <div className="flex space-x-3 lg:space-x-4">
+              <div className="flex items-center space-x-4">
+                <button
+                  onClick={toggleDarkMode}
+                  className={`p-2 rounded-full ${
+                    darkMode
+                      ? "bg-gray-700 hover:bg-gray-600 text-yellow-300"
+                      : "bg-gray-100 hover:bg-gray-200 text-gray-700"
+                  }`}
+                  aria-label="Toggle dark mode"
+                >
+                  {darkMode ? (
+                    <FiSun className="w-5 h-5" />
+                  ) : (
+                    <FiMoon className="w-5 h-5" />
+                  )}
+                </button>
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="bg-gray-800 hover:bg-gray-700 text-white font-medium px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg transition-all text-sm sm:text-base"
+                  className={`${
+                    darkMode
+                      ? "bg-gray-800 hover:bg-gray-700"
+                      : "bg-gray-500 hover:bg-gray-600"
+                  } text-white font-medium px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg transition-all text-sm sm:text-base`}
                 >
                   Login
                 </motion.button>
@@ -336,7 +456,11 @@ const Welcome = () => {
 
             {/* Mobile Menu Button */}
             <button
-              className="md:hidden text-gray-300 focus:outline-none p-2"
+              className={`md:hidden ${
+                darkMode
+                  ? "text-gray-300 hover:text-white"
+                  : "text-gray-600 hover:text-gray-900"
+              } focus:outline-none p-2`}
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label="Toggle menu"
             >
@@ -357,7 +481,7 @@ const Welcome = () => {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.3 }}
-                className="fixed inset-0 z-40 bg-gray-900/80 backdrop-blur-sm"
+                className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
                 onClick={() => setMobileMenuOpen(false)}
               />
 
@@ -367,32 +491,74 @@ const Welcome = () => {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.3 }}
-                className="fixed top-16 left-4 right-4 z-50 bg-gray-800/95 backdrop-blur-lg rounded-xl shadow-xl p-6 space-y-4"
+                className={`fixed top-16 left-4 right-4 z-50 ${
+                  darkMode ? "bg-gray-800/95" : "bg-white/95"
+                } backdrop-blur-lg rounded-xl shadow-xl p-6 space-y-4`}
               >
+                <button
+                  onClick={toggleDarkMode}
+                  className={`w-full flex items-center justify-between py-3 ${
+                    darkMode ? "text-gray-300" : "text-gray-700"
+                  }`}
+                >
+                  <span>Dark Mode</span>
+                  {darkMode ? (
+                    <FiSun className="w-5 h-5" />
+                  ) : (
+                    <FiMoon className="w-5 h-5" />
+                  )}
+                </button>
                 <a
                   href="#features"
-                  className="block text-gray-300 hover:text-white transition py-3 text-lg"
+                  className={`block ${
+                    darkMode
+                      ? "text-gray-300 hover:text-white"
+                      : "text-gray-700 hover:text-gray-900"
+                  } transition py-3 text-lg`}
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Features
                 </a>
                 <a
                   href="#how-it-works"
-                  className="block text-gray-300 hover:text-white transition py-3 text-lg"
+                  className={`block ${
+                    darkMode
+                      ? "text-gray-300 hover:text-white"
+                      : "text-gray-700 hover:text-gray-900"
+                  } transition py-3 text-lg`}
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   How It Works
                 </a>
                 <a
                   href="#pricing"
-                  className="block text-gray-300 hover:text-white transition py-3 text-lg"
+                  className={`block ${
+                    darkMode
+                      ? "text-gray-300 hover:text-white"
+                      : "text-gray-700 hover:text-gray-900"
+                  } transition py-3 text-lg`}
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Pricing
                 </a>
                 <a
+                  href="#team"
+                  className={`block ${
+                    darkMode
+                      ? "text-gray-300 hover:text-white"
+                      : "text-gray-700 hover:text-gray-900"
+                  } transition py-3 text-lg`}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Team
+                </a>
+                <a
                   href="#faq"
-                  className="block text-gray-300 hover:text-white transition py-3 text-lg"
+                  className={`block ${
+                    darkMode
+                      ? "text-gray-300 hover:text-white"
+                      : "text-gray-700 hover:text-gray-900"
+                  } transition py-3 text-lg`}
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   FAQ
@@ -400,7 +566,11 @@ const Welcome = () => {
                 <div className="flex flex-col space-y-3 pt-4">
                   <Link
                     to="/login"
-                    className="bg-gray-700 hover:bg-gray-600 text-white font-medium px-4 py-3 rounded-lg transition-all w-full"
+                    className={`${
+                      darkMode
+                        ? "bg-gray-700 hover:bg-gray-600"
+                        : "bg-gray-500 hover:bg-gray-600"
+                    } text-white font-medium px-4 py-3 rounded-lg transition-all w-full`}
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     Login
@@ -434,10 +604,16 @@ const Welcome = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.4, duration: 0.8 }}
-                className="inline-flex items-center mb-4 sm:mb-6 bg-indigo-900/50 rounded-full px-3 py-1 sm:px-4 sm:py-2"
+                className={`inline-flex items-center mb-4 sm:mb-6 ${
+                  darkMode ? "bg-indigo-900/50" : "bg-indigo-100"
+                } rounded-full px-3 py-1 sm:px-4 sm:py-2`}
               >
                 <FaRobot className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-400" />
-                <span className="ml-2 text-xs sm:text-sm text-indigo-300 font-medium">
+                <span
+                  className={`ml-2 text-xs sm:text-sm ${
+                    darkMode ? "text-indigo-300" : "text-indigo-700"
+                  } font-medium`}
+                >
                   EndVerse AI v2.0
                 </span>
               </motion.div>
@@ -446,7 +622,7 @@ const Welcome = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2, duration: 0.8 }}
-                className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-500 leading-tight"
+                className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-pink-500 leading-tight"
               >
                 The Future of AI <br className="hidden sm:block" />{" "}
                 Conversations
@@ -456,7 +632,9 @@ const Welcome = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.4, duration: 0.8 }}
-                className="text-base sm:text-lg md:text-xl text-gray-300 max-w-2xl mx-auto lg:mx-0 mb-8 sm:mb-10"
+                className={`${
+                  darkMode ? "text-gray-300" : "text-gray-600"
+                } max-w-2xl mx-auto lg:mx-0 mb-8 sm:mb-10 text-base sm:text-lg md:text-xl`}
               >
                 Experience the most advanced AI assistant with integrated image
                 generation. Get 5 free images per user and unlock new
@@ -477,7 +655,11 @@ const Welcome = () => {
                 </Link>
                 <Link
                   to="/examples"
-                  className="bg-gray-800 hover:bg-gray-700 text-white font-semibold px-6 py-2.5 sm:px-8 sm:py-3 rounded-lg flex items-center justify-center transition-all text-sm sm:text-base"
+                  className={`${
+                    darkMode
+                      ? "bg-gray-800 hover:bg-gray-700"
+                      : "bg-gray-500 hover:bg-gray-600"
+                  } text-white font-semibold px-6 py-2.5 sm:px-8 sm:py-3 rounded-lg flex items-center justify-center transition-all text-sm sm:text-base`}
                 >
                   See Examples
                 </Link>
@@ -503,8 +685,18 @@ const Welcome = () => {
                       />
                     ))}
                   </div>
-                  <span className="ml-2 text-xs sm:text-sm text-gray-400">
-                    Join <span className="text-white">100+</span> users
+                  <span
+                    className={`ml-2 text-xs sm:text-sm ${
+                      darkMode ? "text-gray-300" : "text-gray-600"
+                    }`}
+                  >
+                    Join{" "}
+                    <span
+                      className={`${darkMode ? "text-white" : "text-gray-900"}`}
+                    >
+                      100+
+                    </span>{" "}
+                    users
                   </span>
                 </div>
               </motion.div>
@@ -515,10 +707,22 @@ const Welcome = () => {
               initial={{ opacity: 0, x: 50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8 }}
-              className="lg:w-1/2 relative mt-12 lg:mt-0"
+              className="lg:w-1/2 relative mt-0 lg:mt-0"
             >
-              <div className="relative bg-gray-800/50 rounded-xl sm:rounded-2xl p-1.5 sm:p-2 border border-gray-700">
-                <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-purple-500/10 rounded-lg sm:rounded-xl"></div>
+              <div
+                className={`relative ${
+                  darkMode ? "bg-gray-800/50" : "bg-gray-100"
+                } rounded-xl sm:rounded-2xl p-1.5 sm:p-2 border ${
+                  darkMode ? "border-gray-700" : "border-gray-200"
+                }`}
+              >
+                <div
+                  className={`absolute inset-0 bg-gradient-to-br ${
+                    darkMode
+                      ? "from-indigo-500/10 to-purple-500/10"
+                      : "from-indigo-100/50 to-purple-100/50"
+                  } rounded-lg sm:rounded-xl`}
+                ></div>
                 <div className="relative z-10 p-3 sm:p-6">
                   <div className="flex items-center mb-2 sm:mb-4">
                     <div className="flex space-x-1 sm:space-x-2">
@@ -526,7 +730,11 @@ const Welcome = () => {
                       <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-yellow-500"></div>
                       <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-green-500"></div>
                     </div>
-                    <div className="ml-2 sm:ml-4 text-xs sm:text-sm text-gray-400">
+                    <div
+                      className={`ml-2 sm:ml-4 text-xs sm:text-sm ${
+                        darkMode ? "text-gray-400" : "text-gray-500"
+                      }`}
+                    >
                       EndVerse AI Chat
                     </div>
                   </div>
@@ -536,8 +744,16 @@ const Welcome = () => {
                       <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-indigo-600 flex-shrink-0 flex items-center justify-center">
                         <FaRobot className="text-white text-xs sm:text-sm" />
                       </div>
-                      <div className="ml-2 sm:ml-3 bg-gray-700/80 rounded-lg p-2 sm:p-3 max-w-xs">
-                        <p className="text-gray-100 text-xs sm:text-sm">
+                      <div
+                        className={`ml-2 sm:ml-3 ${
+                          darkMode ? "bg-gray-700/80" : "bg-gray-200"
+                        } rounded-lg p-2 sm:p-3 max-w-xs`}
+                      >
+                        <p
+                          className={`${
+                            darkMode ? "text-gray-100" : "text-gray-800"
+                          } text-xs sm:text-sm`}
+                        >
                           Hi there! I'm EndVerse AI. How can I assist you today?
                         </p>
                       </div>
@@ -556,11 +772,25 @@ const Welcome = () => {
                       <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-indigo-600 flex-shrink-0 flex items-center justify-center">
                         <FaRobot className="text-white text-xs sm:text-sm" />
                       </div>
-                      <div className="ml-2 sm:ml-3 bg-gray-700/80 rounded-lg p-2 sm:p-3">
-                        <div className="w-full h-24 sm:h-40 bg-gradient-to-br from-indigo-900/50 to-purple-900/50 rounded flex items-center justify-center">
+                      <div
+                        className={`ml-2 sm:ml-3 ${
+                          darkMode ? "bg-gray-700/80" : "bg-gray-200"
+                        } rounded-lg p-2 sm:p-3`}
+                      >
+                        <div
+                          className={`w-full h-24 sm:h-40 ${
+                            darkMode
+                              ? "bg-gradient-to-br from-indigo-900/50 to-purple-900/50"
+                              : "bg-gradient-to-br from-indigo-100 to-purple-100"
+                          } rounded flex items-center justify-center`}
+                        >
                           <FiImage className="w-6 h-6 sm:w-10 sm:h-10 text-indigo-400" />
                         </div>
-                        <p className="text-gray-300 text-xs sm:text-sm mt-1 sm:mt-2">
+                        <p
+                          className={`${
+                            darkMode ? "text-gray-300" : "text-gray-600"
+                          } text-xs sm:text-sm mt-1 sm:mt-2`}
+                        >
                           Here's your generated image. Would you like any
                           modifications?
                         </p>
@@ -568,11 +798,17 @@ const Welcome = () => {
                     </div>
                   </div>
 
-                  <div className="mt-4 sm:mt-6 bg-gray-700/50 rounded-lg p-2 sm:p-3 flex items-center">
+                  <div
+                    className={`mt-4 sm:mt-6 ${
+                      darkMode ? "bg-gray-700/50" : "bg-gray-200"
+                    } rounded-lg p-2 sm:p-3 flex items-center`}
+                  >
                     <input
                       type="text"
                       placeholder="Type your message..."
-                      className="bg-transparent flex-1 focus:outline-none text-gray-200 text-xs sm:text-sm"
+                      className={`bg-transparent flex-1 focus:outline-none ${
+                        darkMode ? "text-gray-200" : "text-gray-800"
+                      } text-xs sm:text-sm`}
                     />
                     <button className="text-indigo-400 hover:text-indigo-300">
                       <FiArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -585,7 +821,11 @@ const Welcome = () => {
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ delay: 1, duration: 0.5 }}
-                className="absolute -bottom-4 -left-4 sm:-bottom-6 sm:-left-6 bg-indigo-600/20 backdrop-blur-md p-2 sm:p-4 rounded-lg sm:rounded-xl border border-indigo-500/30 shadow-lg text-xs sm:text-sm"
+                className={`absolute -bottom-4 -left-4 sm:-bottom-6 sm:-left-6 ${
+                  darkMode ? "bg-indigo-600/20" : "bg-indigo-100"
+                } backdrop-blur-md p-2 sm:p-4 rounded-lg sm:rounded-xl border ${
+                  darkMode ? "border-indigo-500/30" : "border-indigo-200"
+                } shadow-lg text-xs sm:text-sm`}
               >
                 <div className="flex items-center">
                   <FiZap className="text-yellow-400 w-3 h-3 sm:w-5 sm:h-5" />
@@ -599,10 +839,14 @@ const Welcome = () => {
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ delay: 1.2, duration: 0.5 }}
-                className="absolute -top-4 -right-4 sm:-top-6 sm:-right-6 bg-purple-600/20 backdrop-blur-md p-2 sm:p-4 rounded-lg sm:rounded-xl border border-purple-500/30 shadow-lg text-xs sm:text-sm"
+                className={`absolute -top-4 -right-4 sm:-top-6 sm:-right-6 ${
+                  darkMode ? "bg-purple-600/20" : "bg-purple-100"
+                } backdrop-blur-md p-2 sm:p-4 rounded-lg sm:rounded-xl border ${
+                  darkMode ? "border-purple-500/30" : "border-purple-200"
+                } shadow-lg text-xs sm:text-sm`}
               >
                 <div className="flex items-center">
-                  <FiImage className="text-purple-300 w-3 h-3 sm:w-5 sm:h-5" />
+                  <FiImage className="text-purple-400 w-3 h-3 sm:w-5 sm:h-5" />
                   <span className="ml-1 sm:ml-2 font-medium">
                     5 Free Images
                   </span>
@@ -613,8 +857,47 @@ const Welcome = () => {
         </div>
       </section>
 
+      {/* Stats Section */}
+      <section
+        className={`py-12 sm:py-16 ${
+          darkMode ? "bg-gray-800/30" : "bg-gray-100"
+        }`}
+      >
+        <div className="container mx-auto px-4 sm:px-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+            {stats.map((stat, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                viewport={{ once: true }}
+                className={`p-4 sm:p-6 rounded-lg ${
+                  darkMode ? "bg-gray-800/50" : "bg-white"
+                } text-center`}
+              >
+                <p className="text-2xl sm:text-3xl md:text-4xl font-bold mb-1 sm:mb-2 bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-500">
+                  {stat.value}
+                </p>
+                <p
+                  className={`text-xs sm:text-sm ${
+                    darkMode ? "text-gray-400" : "text-gray-600"
+                  }`}
+                >
+                  {stat.label}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Technologies Section */}
-      <div className="py-12 sm:py-16 bg-gray-800/30">
+      <section
+        className={`py-12 sm:py-16 ${
+          darkMode ? "bg-gray-800/30" : "bg-gray-50"
+        }`}
+      >
         <div className="container mx-auto px-4 sm:px-6">
           <motion.div
             initial={{ opacity: 0 }}
@@ -625,7 +908,11 @@ const Welcome = () => {
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">
               Cutting-Edge Technologies
             </h2>
-            <p className="text-gray-400 max-w-2xl mx-auto text-sm sm:text-base">
+            <p
+              className={`${
+                darkMode ? "text-gray-400" : "text-gray-600"
+              } max-w-2xl mx-auto text-sm sm:text-base`}
+            >
               EndVerse AI combines the most advanced AI technologies to deliver
               unparalleled performance
             </p>
@@ -664,36 +951,6 @@ const Welcome = () => {
                 icon: "🔄",
                 color: "from-green-400 to-emerald-600",
               },
-              {
-                name: "Generative Models",
-                description: "Creating new content from learned patterns",
-                icon: "🖌️",
-                color: "from-red-400 to-pink-500",
-              },
-              {
-                name: "Self-Supervised Learning",
-                description: "Leveraging unlabeled data for training",
-                icon: "🧩",
-                color: "from-indigo-500 to-purple-500",
-              },
-              {
-                name: "Federated Learning",
-                description: "Collaborative training without data sharing",
-                icon: "🤝",
-                color: "from-teal-400 to-green-500",
-              },
-              {
-                name: "Large Language Models",
-                description: "Powerful language processing models",
-                icon: "🧠",
-                color: "from-purple-500 to-indigo-600",
-              },
-              {
-                name: "Image Synthesis",
-                description: "Creating images from textual descriptions",
-                icon: "🖼️",
-                color: "from-pink-500 to-rose-500",
-              },
             ].map((tech, i) => (
               <motion.div
                 key={i}
@@ -701,7 +958,11 @@ const Welcome = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 whileHover={{ y: -5 }}
-                className="flex flex-col items-center p-2 sm:p-4"
+                className={`flex flex-col items-center p-2 sm:p-4 ${
+                  darkMode ? "bg-gray-800/50" : "bg-white"
+                } rounded-lg border ${
+                  darkMode ? "border-gray-700" : "border-gray-200"
+                } shadow-sm`}
               >
                 <div
                   className={`w-12 h-12 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl mb-2 sm:mb-4 flex items-center justify-center text-2xl sm:text-3xl bg-gradient-to-br ${tech.color}`}
@@ -711,34 +972,29 @@ const Welcome = () => {
                 <h3 className="text-sm sm:text-base md:text-lg font-bold text-center mb-1 sm:mb-2">
                   {tech.name}
                 </h3>
-                <p className="text-gray-400 text-xs sm:text-sm text-center">
+                <p
+                  className={`${
+                    darkMode ? "text-gray-400" : "text-gray-600"
+                  } text-xs sm:text-sm text-center`}
+                >
                   {tech.description}
                 </p>
               </motion.div>
             ))}
           </div>
-
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="mt-8 sm:mt-12 md:mt-16 text-center"
-          >
-            <div className="inline-flex items-center px-3 py-1 sm:px-4 sm:py-2 rounded-full bg-gray-800/50 border border-gray-700 text-xs sm:text-sm">
-              <span className="text-gray-300 mr-1 sm:mr-2">
-                Plus 10+ other specialized technologies
-              </span>
-              <FiArrowRight className="text-indigo-400" />
-            </div>
-          </motion.div>
         </div>
-      </div>
+      </section>
 
       {/* Features Section */}
-      <section id="features" className="py-12 sm:py-16 md:py-20 bg-gray-800/50">
+      <section
+        id="features"
+        className={`py-12 sm:py-16 md:py-20 ${
+          darkMode ? "bg-gray-800/50" : "bg-white"
+        }`}
+      >
         <div className="container mx-auto px-4 sm:px-6">
           <motion.div
-            initial={{ opacity: 1 }}
+            initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             className="text-center mb-8 sm:mb-12 md:mb-16"
@@ -746,7 +1002,11 @@ const Welcome = () => {
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">
               Powerful Features
             </h2>
-            <p className="text-gray-400 max-w-2xl mx-auto text-sm sm:text-base">
+            <p
+              className={`${
+                darkMode ? "text-gray-400" : "text-gray-600"
+              } max-w-2xl mx-auto text-sm sm:text-base`}
+            >
               EndVerse AI combines cutting-edge technology with intuitive design
               to give you the best experience.
             </p>
@@ -761,7 +1021,13 @@ const Welcome = () => {
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 viewport={{ once: true }}
                 whileHover={{ y: -5 }}
-                className="bg-gray-800/50 p-4 sm:p-6 rounded-lg sm:rounded-xl border border-gray-700 hover:border-indigo-500 transition-all"
+                className={`${
+                  darkMode ? "bg-gray-800/50" : "bg-white"
+                } p-4 sm:p-6 rounded-lg sm:rounded-xl border ${
+                  darkMode
+                    ? "border-gray-700 hover:border-indigo-500"
+                    : "border-gray-200 hover:border-indigo-400"
+                } transition-all shadow-sm`}
               >
                 <div className="text-indigo-400 mb-2 sm:mb-4">
                   {React.cloneElement(feature.icon, {
@@ -771,7 +1037,11 @@ const Welcome = () => {
                 <h3 className="text-base sm:text-lg md:text-xl font-semibold mb-1 sm:mb-2">
                   {feature.title}
                 </h3>
-                <p className="text-gray-400 text-xs sm:text-sm md:text-base">
+                <p
+                  className={`${
+                    darkMode ? "text-gray-400" : "text-gray-600"
+                  } text-xs sm:text-sm md:text-base`}
+                >
                   {feature.description}
                 </p>
               </motion.div>
@@ -780,14 +1050,235 @@ const Welcome = () => {
         </div>
       </section>
 
+      {/* Developer Section */}
+      <section
+        id="developer"
+        className={`py-12 sm:py-16 md:py-20 ${
+          darkMode ? "bg-gray-800/30" : "bg-gray-50"
+        }`}
+      >
+        <div className="container mx-auto px-4 sm:px-6">
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="text-center mb-8 sm:mb-12 md:mb-16"
+          >
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">
+              The Developer
+            </h2>
+            <p
+              className={`${
+                darkMode ? "text-gray-400" : "text-gray-600"
+              } max-w-2xl mx-auto text-sm sm:text-base`}
+            >
+              The creative mind behind EndVerse AI
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+            {/* Main Developer Card */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              viewport={{ once: true }}
+              className={`${
+                darkMode ? "bg-gray-800/50" : "bg-white"
+              } rounded-lg overflow-hidden border ${
+                darkMode ? "border-gray-700" : "border-gray-200"
+              } shadow-sm col-span-1 md:col-span-2 lg:col-span-1`}
+            >
+              <div className="p-4 sm:p-6">
+                <img
+                  src="https://avatars.githubusercontent.com/u/160850571?v=4" // Replace with actual image URL
+                  alt="Harsh"
+                  className="w-32 h-32 mx-auto rounded-full mb-4 border-2 border-indigo-500"
+                  loading="lazy"
+                />
+                <h3 className="text-xl sm:text-2xl font-bold text-center mb-1">
+                  Harsh
+                </h3>
+                <p
+                  className={`${
+                    darkMode ? "text-indigo-400" : "text-indigo-600"
+                  } text-sm sm:text-base text-center mb-2`}
+                >
+                  Full Stack Developer & AI Enthusiast
+                </p>
+                <p
+                  className={`${
+                    darkMode ? "text-gray-400" : "text-gray-600"
+                  } text-sm text-center mb-4`}
+                >
+                  Creator of EndVerse AI with expertise in React, Node.js, and machine learning. Passionate about building innovative AI solutions.
+                </p>
+                <div className="flex justify-center space-x-4">
+                  <a 
+                    href="https://github.com/201Harsh" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400"
+                  >
+                    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" />
+                    </svg>
+                  </a>
+                  <a 
+                    href="https://instagram.com/201Harshs" // Replace with actual Instagram URL
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400"
+                  >
+                    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path fillRule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z" clipRule="evenodd" />
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* AI Versions */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              viewport={{ once: true }}
+              className={`${
+                darkMode ? "bg-gray-800/50" : "bg-white"
+              } rounded-lg overflow-hidden border ${
+                darkMode ? "border-gray-700" : "border-gray-200"
+              } shadow-sm`}
+            >
+              <div className="p-4 sm:p-6">
+                <img
+                  src="https://cdn-icons-png.flaticon.com/512/1006/1006363.png" // AI icon
+                  alt="AI Versions"
+                  className="w-24 h-24 mx-auto mb-4"
+                  loading="lazy"
+                />
+                <h3 className="text-lg sm:text-xl font-bold text-center mb-1">
+                  AI Versions
+                </h3>
+                <p
+                  className={`${
+                    darkMode ? "text-indigo-400" : "text-indigo-600"
+                  } text-sm sm:text-base text-center mb-2`}
+                >
+                    Powered by EndGaming AI
+                  </p>
+                <div className="space-y-2">
+                  <div className={`${
+                    darkMode ? "bg-gray-700/50" : "bg-gray-100"
+                  } p-2 rounded`}>
+                    <p className={`${
+                      darkMode ? "text-gray-300" : "text-gray-700"
+                    } font-medium`}>EndGaming AI v1.0</p>
+                    <p className={`${
+                      darkMode ? "text-gray-400" : "text-gray-600"
+                    } text-xs`}>Initial release with basic NLP</p>
+                  </div>
+                  <div className={`${
+                    darkMode ? "bg-gray-700/50" : "bg-gray-100"
+                  } p-2 rounded`}>
+                    <p className={`${
+                      darkMode ? "text-gray-300" : "text-gray-700"
+                    } font-medium`}>EndGaming AI v2.0</p>
+                    <p className={`${
+                      darkMode ? "text-gray-400" : "text-gray-600"
+                    } text-xs`}>Enhanced with deep learning</p>
+                  </div>
+                  <div className={`${
+                    darkMode ? "bg-gray-700/50" : "bg-gray-100"
+                  } p-2 rounded`}>
+                    <p className={`${
+                      darkMode ? "text-gray-300" : "text-gray-700"
+                    } font-medium`}>EndGaming AI v3.5</p>
+                    <p className={`${
+                      darkMode ? "text-gray-400" : "text-gray-600"
+                    } text-xs`}>Multi-modal AI capabilities</p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Development Info */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              viewport={{ once: true }}
+              className={`${
+                darkMode ? "bg-gray-800/50" : "bg-white"
+              } rounded-lg overflow-hidden border ${
+                darkMode ? "border-gray-700" : "border-gray-200"
+              } shadow-sm`}
+            >
+              <div className="p-4 sm:p-6">
+                <img
+                  src="https://cdn-icons-png.flaticon.com/512/1055/1055687.png" // Code icon
+                  alt="Development"
+                  className="w-24 h-24 mx-auto mb-4"
+                  loading="lazy"
+                />
+                <h3 className="text-lg sm:text-xl font-bold text-center mb-1">
+                  Development
+                </h3>
+                <p
+                  className={`${
+                    darkMode ? "text-indigo-400" : "text-indigo-600"
+                  } text-sm sm:text-base text-center mb-2`}
+                >
+                  Tech Stack & Tools
+                </p>
+                <div className="flex flex-wrap justify-center gap-2">
+                  <span className={`${
+                    darkMode ? "bg-gray-700 text-gray-300" : "bg-gray-200 text-gray-800"
+                  } px-2 py-1 rounded text-xs`}>React</span>
+                  <span className={`${
+                    darkMode ? "bg-gray-700 text-gray-300" : "bg-gray-200 text-gray-800"
+                  } px-2 py-1 rounded text-xs`}>Node.js</span>
+                  <span className={`${
+                    darkMode ? "bg-gray-700 text-gray-300" : "bg-gray-200 text-gray-800"
+                  } px-2 py-1 rounded text-xs`}>Python</span>
+                  <span className={`${
+                    darkMode ? "bg-gray-700 text-gray-300" : "bg-gray-200 text-gray-800"
+                  } px-2 py-1 rounded text-xs`}>React Native</span>
+                  <span className={`${
+                    darkMode ? "bg-gray-700 text-gray-300" : "bg-gray-200 text-gray-800"
+                  } px-2 py-1 rounded text-xs`}>MongoDB</span>
+                  <span className={`${
+                    darkMode ? "bg-gray-700 text-gray-300" : "bg-gray-200 text-gray-800"
+                  } px-2 py-1 rounded text-xs`}>Tailwind CSS</span>
+                </div>
+                <p className={`${
+                  darkMode ? "text-gray-400" : "text-gray-600"
+                } text-xs mt-4 text-center`}>
+                  Developed by 201Harshs (Harsh)
+                </p>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
       {/* How It Works */}
-      <section id="how-it-works" className="py-12 sm:py-16 md:py-20">
+      <section
+        id="how-it-works"
+        className={`py-12 sm:py-16 md:py-20 ${
+          darkMode ? "bg-gray-900" : "bg-white"
+        }`}
+      >
         <div className="container mx-auto px-4 sm:px-6">
           <motion.div className="text-center mb-8 sm:mb-12 md:mb-16">
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">
               How It Works
             </h2>
-            <p className="text-gray-400 max-w-2xl mx-auto text-sm sm:text-base">
+            <p
+              className={`${
+                darkMode ? "text-gray-400" : "text-gray-600"
+              } max-w-2xl mx-auto text-sm sm:text-base`}
+            >
               Get started with EndVerse AI in just a few simple steps.
             </p>
           </motion.div>
@@ -837,7 +1328,11 @@ const Welcome = () => {
                       <h3 className="text-lg sm:text-xl font-semibold mb-1 sm:mb-2">
                         {step.title}
                       </h3>
-                      <p className="text-gray-400 text-sm sm:text-base">
+                      <p
+                        className={`${
+                          darkMode ? "text-gray-400" : "text-gray-600"
+                        } text-sm sm:text-base`}
+                      >
                         {step.description}
                       </p>
                     </div>
@@ -850,7 +1345,12 @@ const Welcome = () => {
       </section>
 
       {/* Pricing Section */}
-      <section id="pricing" className="py-12 sm:py-16 md:py-20 bg-gray-800/30">
+      <section
+        id="pricing"
+        className={`py-12 sm:py-16 md:py-20 ${
+          darkMode ? "bg-gray-800/30" : "bg-gray-50"
+        }`}
+      >
         <div className="container mx-auto px-4 sm:px-6">
           <motion.div
             initial={{ opacity: 0 }}
@@ -861,7 +1361,11 @@ const Welcome = () => {
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">
               Simple, Transparent Pricing
             </h2>
-            <p className="text-gray-400 max-w-2xl mx-auto text-sm sm:text-base">
+            <p
+              className={`${
+                darkMode ? "text-gray-400" : "text-gray-600"
+              } max-w-2xl mx-auto text-sm sm:text-base`}
+            >
               Choose the plan that fits your needs. No hidden fees, cancel
               anytime.
             </p>
@@ -875,10 +1379,14 @@ const Welcome = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className={`bg-gray-800/50 rounded-lg sm:rounded-xl border ${
+                className={`${
+                  darkMode ? "bg-gray-800/50" : "bg-white"
+                } rounded-lg sm:rounded-xl border ${
                   plan.popular
                     ? "border-indigo-500 shadow-lg shadow-indigo-500/20"
-                    : "border-gray-700"
+                    : darkMode
+                    ? "border-gray-700"
+                    : "border-gray-200"
                 } overflow-hidden`}
               >
                 {plan.popular && (
@@ -895,7 +1403,11 @@ const Welcome = () => {
                       {plan.price}
                     </span>
                     {plan.period && (
-                      <span className="text-gray-400 text-sm sm:text-base">
+                      <span
+                        className={`${
+                          darkMode ? "text-gray-400" : "text-gray-600"
+                        } text-sm sm:text-base`}
+                      >
                         {plan.period}
                       </span>
                     )}
@@ -904,7 +1416,11 @@ const Welcome = () => {
                     {plan.features.map((feature, i) => (
                       <li key={i} className="flex items-start">
                         <FiCheckCircle className="text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                        <span className="text-gray-300 text-xs sm:text-sm">
+                        <span
+                          className={`${
+                            darkMode ? "text-gray-300" : "text-gray-700"
+                          } text-xs sm:text-sm`}
+                        >
                           {feature}
                         </span>
                       </li>
@@ -916,7 +1432,9 @@ const Welcome = () => {
                     className={`w-full py-2 sm:py-3 rounded-lg font-medium text-sm sm:text-base ${
                       plan.popular
                         ? "bg-indigo-600 hover:bg-indigo-700"
-                        : "bg-gray-700 hover:bg-gray-600"
+                        : darkMode
+                        ? "bg-gray-700 hover:bg-gray-600"
+                        : "bg-gray-100 hover:bg-gray-200"
                     } transition-all`}
                   >
                     {plan.cta}
@@ -929,7 +1447,11 @@ const Welcome = () => {
       </section>
 
       {/* Testimonials */}
-      <section className="py-12 sm:py-16 md:py-20 bg-gray-800/50">
+      <section
+        className={`py-12 sm:py-16 md:py-20 ${
+          darkMode ? "bg-gray-800/50" : "bg-white"
+        }`}
+      >
         <div className="container mx-auto px-4 sm:px-6">
           <motion.div
             initial={{ opacity: 0 }}
@@ -940,7 +1462,11 @@ const Welcome = () => {
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">
               What Users Say
             </h2>
-            <p className="text-gray-400 max-w-2xl mx-auto text-sm sm:text-base">
+            <p
+              className={`${
+                darkMode ? "text-gray-400" : "text-gray-600"
+              } max-w-2xl mx-auto text-sm sm:text-base`}
+            >
               Don't just take our word for it. Here's what our users have to
               say.
             </p>
@@ -952,17 +1478,29 @@ const Welcome = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5 }}
-              className="bg-gray-800 p-4 sm:p-6 md:p-8 rounded-lg sm:rounded-xl relative"
+              className={`${
+                darkMode ? "bg-gray-800" : "bg-white"
+              } p-4 sm:p-6 md:p-8 rounded-lg sm:rounded-xl relative border ${
+                darkMode ? "border-gray-700" : "border-gray-200"
+              }`}
             >
               <button
                 onClick={prevTestimonial}
-                className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 bg-gray-700 hover:bg-gray-600 p-1 sm:p-2 rounded-full z-10"
+                className={`absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 ${
+                  darkMode
+                    ? "bg-gray-700 hover:bg-gray-600"
+                    : "bg-gray-100 hover:bg-gray-200"
+                } p-1 sm:p-2 rounded-full z-10`}
               >
                 <FiChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
               </button>
               <button
                 onClick={nextTestimonial}
-                className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 bg-gray-700 hover:bg-gray-600 p-1 sm:p-2 rounded-full z-10"
+                className={`absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 ${
+                  darkMode
+                    ? "bg-gray-700 hover:bg-gray-600"
+                    : "bg-gray-100 hover:bg-gray-200"
+                } p-1 sm:p-2 rounded-full z-10`}
               >
                 <FiChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
               </button>
@@ -974,7 +1512,9 @@ const Welcome = () => {
                     className={`w-4 h-4 sm:w-5 sm:h-5 ${
                       i < testimonials[currentTestimonial].rating
                         ? "text-yellow-400 fill-yellow-400"
-                        : "text-gray-600"
+                        : darkMode
+                        ? "text-gray-600"
+                        : "text-gray-300"
                     }`}
                   />
                 ))}
@@ -993,7 +1533,11 @@ const Welcome = () => {
                   <h4 className="font-semibold text-sm sm:text-base">
                     {testimonials[currentTestimonial].name}
                   </h4>
-                  <p className="text-gray-400 text-xs sm:text-sm">
+                  <p
+                    className={`${
+                      darkMode ? "text-gray-400" : "text-gray-600"
+                    } text-xs sm:text-sm`}
+                  >
                     {testimonials[currentTestimonial].role}
                   </p>
                 </div>
@@ -1008,7 +1552,9 @@ const Welcome = () => {
                   className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full ${
                     currentTestimonial === index
                       ? "bg-indigo-500"
-                      : "bg-gray-600"
+                      : darkMode
+                      ? "bg-gray-600"
+                      : "bg-gray-300"
                   }`}
                   aria-label={`View testimonial ${index + 1}`}
                 />
@@ -1019,7 +1565,11 @@ const Welcome = () => {
       </section>
 
       {/* Showcase Section */}
-      <section className="py-12 sm:py-16 md:py-20 bg-gray-900">
+      <section
+        className={`py-12 sm:py-16 md:py-20 ${
+          darkMode ? "bg-gray-900" : "bg-gray-50"
+        }`}
+      >
         <div className="container mx-auto px-4 sm:px-6">
           <motion.div
             initial={{ opacity: 0 }}
@@ -1030,7 +1580,11 @@ const Welcome = () => {
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">
               Community Showcase
             </h2>
-            <p className="text-gray-400 max-w-2xl mx-auto text-sm sm:text-base">
+            <p
+              className={`${
+                darkMode ? "text-gray-400" : "text-gray-600"
+              } max-w-2xl mx-auto text-sm sm:text-base`}
+            >
               See what our community has created with EndVerse AI
             </p>
           </motion.div>
@@ -1042,16 +1596,30 @@ const Welcome = () => {
                 <h3 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-center">
                   Image Generation Examples
                 </h3>
-                <div className="relative bg-gray-800/50 rounded-lg sm:rounded-xl overflow-hidden border border-gray-700">
+                <div
+                  className={`relative ${
+                    darkMode ? "bg-gray-800/50" : "bg-white"
+                  } rounded-lg sm:rounded-xl overflow-hidden border ${
+                    darkMode ? "border-gray-700" : "border-gray-200"
+                  }`}
+                >
                   <button
                     onClick={prevShowcase}
-                    className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 bg-gray-700 hover:bg-gray-600 p-1 sm:p-2 rounded-full z-10"
+                    className={`absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 ${
+                      darkMode
+                        ? "bg-gray-700 hover:bg-gray-600"
+                        : "bg-gray-100 hover:bg-gray-200"
+                    } p-1 sm:p-2 rounded-full z-10`}
                   >
                     <FiChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
                   </button>
                   <button
                     onClick={nextShowcase}
-                    className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 bg-gray-700 hover:bg-gray-600 p-1 sm:p-2 rounded-full z-10"
+                    className={`absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 ${
+                      darkMode
+                        ? "bg-gray-700 hover:bg-gray-600"
+                        : "bg-gray-100 hover:bg-gray-200"
+                    } p-1 sm:p-2 rounded-full z-10`}
                   >
                     <FiChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
                   </button>
@@ -1068,12 +1636,20 @@ const Welcome = () => {
                         <p className="font-medium text-sm sm:text-base">
                           {showcaseItems[showcaseIndex].user.name}
                         </p>
-                        <p className="text-gray-400 text-xs sm:text-sm">
+                        <p
+                          className={`${
+                            darkMode ? "text-gray-400" : "text-gray-600"
+                          } text-xs sm:text-sm`}
+                        >
                           Generated with EndVerse AI
                         </p>
                       </div>
                     </div>
-                    <div className="bg-gray-700/50 rounded-lg overflow-hidden mb-2 sm:mb-4">
+                    <div
+                      className={`${
+                        darkMode ? "bg-gray-700/50" : "bg-gray-100"
+                      } rounded-lg overflow-hidden mb-2 sm:mb-4`}
+                    >
                       <img
                         src={showcaseItems[showcaseIndex].image}
                         alt={showcaseItems[showcaseIndex].prompt}
@@ -1081,11 +1657,23 @@ const Welcome = () => {
                         loading="lazy"
                       />
                     </div>
-                    <div className="bg-gray-800 p-2 sm:p-3 md:p-4 rounded-lg">
-                      <p className="text-gray-300 font-medium mb-1 text-xs sm:text-sm">
+                    <div
+                      className={`${
+                        darkMode ? "bg-gray-800" : "bg-gray-100"
+                      } p-2 sm:p-3 md:p-4 rounded-lg`}
+                    >
+                      <p
+                        className={`${
+                          darkMode ? "text-gray-300" : "text-gray-700"
+                        } font-medium mb-1 text-xs sm:text-sm`}
+                      >
                         Prompt:
                       </p>
-                      <p className="text-gray-400 text-xs sm:text-sm">
+                      <p
+                        className={`${
+                          darkMode ? "text-gray-400" : "text-gray-600"
+                        } text-xs sm:text-sm`}
+                      >
                         "{showcaseItems[showcaseIndex].prompt}"
                       </p>
                     </div>
@@ -1099,7 +1687,9 @@ const Welcome = () => {
                       className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full ${
                         showcaseIndex === index
                           ? "bg-indigo-500"
-                          : "bg-gray-600"
+                          : darkMode
+                          ? "bg-gray-600"
+                          : "bg-gray-300"
                       }`}
                       aria-label={`View example ${index + 1}`}
                     />
@@ -1120,7 +1710,11 @@ const Welcome = () => {
                       whileInView={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.5, delay: index * 0.1 }}
                       viewport={{ once: true }}
-                      className="bg-gray-800/50 rounded-lg sm:rounded-xl border border-gray-700 overflow-hidden"
+                      className={`${
+                        darkMode ? "bg-gray-800/50" : "bg-white"
+                      } rounded-lg sm:rounded-xl border ${
+                        darkMode ? "border-gray-700" : "border-gray-200"
+                      } overflow-hidden`}
                     >
                       <div className="p-3 sm:p-4 md:p-6">
                         <div className="flex items-center mb-2 sm:mb-4">
@@ -1134,7 +1728,11 @@ const Welcome = () => {
                             User
                           </p>
                         </div>
-                        <p className="text-gray-300 mb-4 sm:mb-6 pl-8 sm:pl-11 text-sm sm:text-base">
+                        <p
+                          className={`${
+                            darkMode ? "text-gray-300" : "text-gray-700"
+                          } mb-4 sm:mb-6 pl-8 sm:pl-11 text-sm sm:text-base`}
+                        >
                           {chat.user}
                         </p>
 
@@ -1146,7 +1744,11 @@ const Welcome = () => {
                             EndVerse AI
                           </p>
                         </div>
-                        <p className="text-gray-300 whitespace-pre-line pl-8 sm:pl-11 text-sm sm:text-base">
+                        <p
+                          className={`${
+                            darkMode ? "text-gray-300" : "text-gray-700"
+                          } whitespace-pre-line pl-8 sm:pl-11 text-sm sm:text-base`}
+                        >
                           {chat.ai}
                         </p>
                       </div>
@@ -1160,7 +1762,12 @@ const Welcome = () => {
       </section>
 
       {/* FAQ Section */}
-      <section id="faq" className="py-12 sm:py-16 md:py-20">
+      <section
+        id="faq"
+        className={`py-12 sm:py-16 md:py-20 ${
+          darkMode ? "bg-gray-800/30" : "bg-white"
+        }`}
+      >
         <div className="container mx-auto px-4 sm:px-6">
           <motion.div
             initial={{ opacity: 0 }}
@@ -1171,7 +1778,11 @@ const Welcome = () => {
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">
               Frequently Asked Questions
             </h2>
-            <p className="text-gray-400 max-w-2xl mx-auto text-sm sm:text-base">
+            <p
+              className={`${
+                darkMode ? "text-gray-400" : "text-gray-600"
+              } max-w-2xl mx-auto text-sm sm:text-base`}
+            >
               Can't find what you're looking for? Contact our support team.
             </p>
           </motion.div>
@@ -1184,17 +1795,34 @@ const Welcome = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="bg-gray-800/50 rounded-lg sm:rounded-xl overflow-hidden border border-gray-700"
+                className={`${
+                  darkMode ? "bg-gray-800/50" : "bg-white"
+                } rounded-lg sm:rounded-xl overflow-hidden border ${
+                  darkMode ? "border-gray-700" : "border-gray-200"
+                }`}
               >
-                <button className="w-full flex justify-between items-center p-3 sm:p-4 md:p-6 text-left focus:outline-none">
+                <button
+                  className="w-full flex justify-between items-center p-3 sm:p-4 md:p-6 text-left focus:outline-none"
+                  onClick={() => toggleFaq(index)}
+                >
                   <h3 className="text-sm sm:text-base md:text-lg font-medium">
                     {faq.question}
                   </h3>
-                  <FiChevronDown className="text-gray-400 transition-transform duration-200 w-4 h-4 sm:w-5 sm:h-5" />
+                  <FiChevronDown
+                    className={`text-indigo-400 transition-transform duration-200 w-4 h-4 sm:w-5 sm:h-5 ${
+                      activeFaq === index ? "transform rotate-180" : ""
+                    }`}
+                  />
                 </button>
-                <div className="px-4 sm:px-6 pb-4 sm:pb-6 pt-0 text-gray-400 text-xs sm:text-sm md:text-base">
-                  {faq.answer}
-                </div>
+                {activeFaq === index && (
+                  <div
+                    className={`px-4 sm:px-6 pb-4 sm:pb-6 pt-0 ${
+                      darkMode ? "text-gray-400" : "text-gray-600"
+                    } text-xs sm:text-sm md:text-base`}
+                  >
+                    {faq.answer}
+                  </div>
+                )}
               </motion.div>
             ))}
           </div>
@@ -1202,19 +1830,31 @@ const Welcome = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-12 sm:py-16 md:py-20">
+      <section
+        className={`py-12 sm:py-16 md:py-20 ${
+          darkMode ? "bg-gray-900" : "bg-gray-50"
+        }`}
+      >
         <div className="container mx-auto px-4 sm:px-6">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="bg-gradient-to-r from-indigo-900/50 to-purple-900/50 rounded-xl sm:rounded-2xl p-6 sm:p-8 md:p-12 text-center"
+            className={`bg-gradient-to-r ${
+              darkMode
+                ? "from-indigo-900/50 to-purple-900/50"
+                : "from-indigo-100 to-purple-100"
+            } rounded-xl sm:rounded-2xl p-6 sm:p-8 md:p-12 text-center`}
           >
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-6">
               Ready to Experience EndVerse AI?
             </h2>
-            <p className="text-base sm:text-lg md:text-xl text-gray-300 max-w-2xl mx-auto mb-6 sm:mb-8">
+            <p
+              className={`text-base sm:text-lg md:text-xl ${
+                darkMode ? "text-gray-300" : "text-gray-700"
+              } max-w-2xl mx-auto mb-6 sm:mb-8`}
+            >
               Join thousands of users who are already boosting their
               productivity and creativity with our AI.
             </p>
@@ -1222,14 +1862,18 @@ const Welcome = () => {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="bg-white text-gray-900 font-semibold px-6 py-3 sm:px-8 sm:py-4 rounded-lg flex items-center justify-center transition-all text-sm sm:text-base"
+                className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-3 sm:px-8 sm:py-4 rounded-lg flex items-center justify-center transition-all text-sm sm:text-base"
               >
                 Get Started - It's Free <FiArrowRight className="ml-2" />
               </motion.button>
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="bg-transparent border border-gray-500 hover:border-gray-400 text-white font-semibold px-6 py-3 sm:px-8 sm:py-4 rounded-lg flex items-center justify-center transition-all text-sm sm:text-base"
+                className={`${
+                  darkMode
+                    ? "bg-transparent border border-gray-500 hover:border-gray-400 text-white"
+                    : "bg-white border border-gray-200 hover:border-gray-300 text-gray-900"
+                } font-semibold px-6 py-3 sm:px-8 sm:py-4 rounded-lg flex items-center justify-center transition-all text-sm sm:text-base`}
               >
                 Schedule a Demo
               </motion.button>
@@ -1239,7 +1883,11 @@ const Welcome = () => {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 border-t border-gray-800 py-8 sm:py-12">
+      <footer
+        className={`${darkMode ? "bg-gray-900" : "bg-white"} border-t ${
+          darkMode ? "border-gray-800" : "border-gray-200"
+        } py-8 sm:py-12`}
+      >
         <div className="container mx-auto px-4 sm:px-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 mb-8 sm:mb-12">
             <div>
@@ -1249,35 +1897,88 @@ const Welcome = () => {
                   EndVerse AI
                 </span>
               </div>
-              <p className="text-gray-400 mb-3 sm:mb-4 text-xs sm:text-sm">
+              <p
+                className={`${
+                  darkMode ? "text-gray-400" : "text-gray-600"
+                } mb-3 sm:mb-4 text-xs sm:text-sm`}
+              >
                 The most advanced AI assistant with integrated image generation.
               </p>
               <div className="flex space-x-3 sm:space-x-4">
                 <a
                   href="#"
-                  className="text-gray-400 hover:text-white transition"
+                  className={`${
+                    darkMode
+                      ? "text-gray-400 hover:text-white"
+                      : "text-gray-600 hover:text-gray-900"
+                  } transition`}
                   aria-label="Twitter"
                 >
                   <FaTwitter className="w-4 h-4 sm:w-5 sm:h-5" />
                 </a>
                 <a
                   href="#"
-                  className="text-gray-400 hover:text-white transition"
+                  className={`${
+                    darkMode
+                      ? "text-gray-400 hover:text-white"
+                      : "text-gray-600 hover:text-gray-900"
+                  } transition`}
                   aria-label="Discord"
                 >
                   <FaDiscord className="w-4 h-4 sm:w-5 sm:h-5" />
                 </a>
+                <a
+                  href="#"
+                  className={`${
+                    darkMode
+                      ? "text-gray-400 hover:text-white"
+                      : "text-gray-600 hover:text-gray-900"
+                  } transition`}
+                  aria-label="GitHub"
+                >
+                  <FaGithub className="w-4 h-4 sm:w-5 sm:h-5" />
+                </a>
+                <a
+                  href="#"
+                  className={`${
+                    darkMode
+                      ? "text-gray-400 hover:text-white"
+                      : "text-gray-600 hover:text-gray-900"
+                  } transition`}
+                  aria-label="LinkedIn"
+                >
+                  <FaLinkedin className="w-4 h-4 sm:w-5 sm:h-5" />
+                </a>
+                <a
+                  href="#"
+                  className={`${
+                    darkMode
+                      ? "text-gray-400 hover:text-white"
+                      : "text-gray-600 hover:text-gray-900"
+                  } transition`}
+                  aria-label="YouTube"
+                >
+                  <FaYoutube className="w-4 h-4 sm:w-5 sm:h-5" />
+                </a>
               </div>
             </div>
             <div>
-              <h3 className="text-sm sm:text-base md:text-lg font-semibold mb-2 sm:mb-3">
+              <h3
+                className={`text-sm sm:text-base md:text-lg font-semibold mb-2 sm:mb-3 ${
+                  darkMode ? "text-gray-300" : "text-gray-800"
+                }`}
+              >
                 Product
               </h3>
               <ul className="space-y-1 sm:space-y-2">
                 <li>
                   <a
                     href="#features"
-                    className="text-gray-400 hover:text-white transition text-xs sm:text-sm"
+                    className={`${
+                      darkMode
+                        ? "text-gray-400 hover:text-white"
+                        : "text-gray-600 hover:text-gray-900"
+                    } transition text-xs sm:text-sm`}
                   >
                     Features
                   </a>
@@ -1285,7 +1986,11 @@ const Welcome = () => {
                 <li>
                   <a
                     href="#pricing"
-                    className="text-gray-400 hover:text-white transition text-xs sm:text-sm"
+                    className={`${
+                      darkMode
+                        ? "text-gray-400 hover:text-white"
+                        : "text-gray-600 hover:text-gray-900"
+                    } transition text-xs sm:text-sm`}
                   >
                     Pricing
                   </a>
@@ -1293,7 +1998,11 @@ const Welcome = () => {
                 <li>
                   <a
                     href="#"
-                    className="text-gray-400 hover:text-white transition text-xs sm:text-sm"
+                    className={`${
+                      darkMode
+                        ? "text-gray-400 hover:text-white"
+                        : "text-gray-600 hover:text-gray-900"
+                    } transition text-xs sm:text-sm`}
                   >
                     API
                   </a>
@@ -1301,7 +2010,11 @@ const Welcome = () => {
                 <li>
                   <a
                     href="#"
-                    className="text-gray-400 hover:text-white transition text-xs sm:text-sm"
+                    className={`${
+                      darkMode
+                        ? "text-gray-400 hover:text-white"
+                        : "text-gray-600 hover:text-gray-900"
+                    } transition text-xs sm:text-sm`}
                   >
                     Integrations
                   </a>
@@ -1309,14 +2022,22 @@ const Welcome = () => {
               </ul>
             </div>
             <div>
-              <h3 className="text-sm sm:text-base md:text-lg font-semibold mb-2 sm:mb-3">
+              <h3
+                className={`text-sm sm:text-base md:text-lg font-semibold mb-2 sm:mb-3 ${
+                  darkMode ? "text-gray-300" : "text-gray-800"
+                }`}
+              >
                 Resources
               </h3>
               <ul className="space-y-1 sm:space-y-2">
                 <li>
                   <a
                     href="#"
-                    className="text-gray-400 hover:text-white transition text-xs sm:text-sm"
+                    className={`${
+                      darkMode
+                        ? "text-gray-400 hover:text-white"
+                        : "text-gray-600 hover:text-gray-900"
+                    } transition text-xs sm:text-sm`}
                   >
                     Documentation
                   </a>
@@ -1324,7 +2045,11 @@ const Welcome = () => {
                 <li>
                   <a
                     href="#"
-                    className="text-gray-400 hover:text-white transition text-xs sm:text-sm"
+                    className={`${
+                      darkMode
+                        ? "text-gray-400 hover:text-white"
+                        : "text-gray-600 hover:text-gray-900"
+                    } transition text-xs sm:text-sm`}
                   >
                     Guides
                   </a>
@@ -1332,7 +2057,11 @@ const Welcome = () => {
                 <li>
                   <a
                     href="#"
-                    className="text-gray-400 hover:text-white transition text-xs sm:text-sm"
+                    className={`${
+                      darkMode
+                        ? "text-gray-400 hover:text-white"
+                        : "text-gray-600 hover:text-gray-900"
+                    } transition text-xs sm:text-sm`}
                   >
                     Blog
                   </a>
@@ -1340,7 +2069,11 @@ const Welcome = () => {
                 <li>
                   <a
                     href="#"
-                    className="text-gray-400 hover:text-white transition text-xs sm:text-sm"
+                    className={`${
+                      darkMode
+                        ? "text-gray-400 hover:text-white"
+                        : "text-gray-600 hover:text-gray-900"
+                    } transition text-xs sm:text-sm`}
                   >
                     Community
                   </a>

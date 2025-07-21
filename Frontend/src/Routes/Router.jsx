@@ -6,6 +6,7 @@ import Login from "../Pages/Login";
 import OTPVerification from "../Pages/OTPVerification";
 import Dashboard from "../Pages/Dashboard";
 import ProfilePage from "../Pages/ProfilePage";
+import ExamplePage from "../Pages/ExamplePage";
 
 const Router = () => {
   return (
@@ -17,6 +18,7 @@ const Router = () => {
         <Route path="/verify" element={<OTPVerification />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/examples" element={<ExamplePage />} />
       </Routes>
     </BrowserRouter>
   );
