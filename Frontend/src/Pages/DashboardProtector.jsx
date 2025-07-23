@@ -25,7 +25,7 @@ const DashboardProtector = ({ children }) => {
         if (res.status === 200) {
           setTimeout(() => {
             setIsLoading(false);
-          }, 3500);
+          }, 3000);
         } else {
           localStorage.clear();
           Navigate("/");
