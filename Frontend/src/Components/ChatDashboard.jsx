@@ -10,27 +10,63 @@ import {
   FaMicrophone,
   FaRegPaperPlane,
   FaThumbsUp,
-  FaThumbsDown
+  FaThumbsDown,
 } from "react-icons/fa";
+import axiosInstance from "../config/Axios";
+import { toast } from "react-toastify";
 
-const ChatDashboard = ({ 
-  darkMode, 
-  toggleDarkMode, 
-  clearChat, 
-  isTyping, 
+const ChatDashboard = ({
+  darkMode,
+  toggleDarkMode,
+  clearChat,
+  isTyping,
   setIsTyping,
   messages,
   setMessages,
   userChat,
   setuserChat,
   hasUserStartedChatting,
-  setHasUserStartedChatting
+  setHasUserStartedChatting,
 }) => {
   const [message, setMessage] = useState("");
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
   const inputRef = useRef(null);
   const userName = localStorage.getItem("name") || "EndVerse User";
+
+  // Load saved messages from localStorage on component mount
+  useEffect(() => {
+    const savedMessages = localStorage.getItem("chat_messages");
+    if (savedMessages) {
+      try {
+        const parsedMessages = JSON.parse(savedMessages);
+        // Convert string timestamps back to Date objects
+        const messagesWithDates = parsedMessages.map(msg => ({
+          ...msg,
+          timestamp: new Date(msg.timestamp)
+        }));
+        setMessages(messagesWithDates);
+        
+        // If there are messages, set hasUserStartedChatting to true
+        if (messagesWithDates.length > 0) {
+          setHasUserStartedChatting(true);
+        }
+      } catch (error) {
+        console.error("Failed to parse saved messages:", error);
+        localStorage.removeItem("chat_messages");
+      }
+    }
+  }, []);
+
+  // Save messages to localStorage whenever they change
+  useEffect(() => {
+    if (messages.length > 0) {
+      const limitedMessages = messages.slice(-50); // Keep only the last 50 messages
+      localStorage.setItem("chat_messages", JSON.stringify(limitedMessages));
+    } else {
+      localStorage.removeItem("chat_messages");
+    }
+  }, [messages]);
 
   // Handle incoming messages
   useEffect(() => {
@@ -47,39 +83,50 @@ const ChatDashboard = ({
 
       setMessages((prev) => [...prev, newUserMessage]);
 
-      // Simulate bot typing indicator
-      setIsTyping(true);
-      const typingTimeout = setTimeout(() => {
-        const botResponses = [
-          "I understand your question about '" +
-            userChat[userChat.length - 1] +
-            "'. Let me help with that.",
-          "That's an interesting point about '" +
-            userChat[userChat.length - 1] +
-            "'. Here's what I think...",
-          "Thanks for sharing that! Regarding '" +
-            userChat[userChat.length - 1] +
-            "', here's my response.",
-          "I've processed your input about '" +
-            userChat[userChat.length - 1] +
-            "'. Here's the information you need.",
-        ];
+      // Get AI response from backend
+      const getAIResponse = async () => {
+        setIsTyping(true);
+        try {
+          const response = await axiosInstance.post("/ai/chat", {
+            prompt: userChat[userChat.length - 1],
+          });
+          
+          if (response.status === 200) {
+            const newBotMessage = {
+              id: Date.now() + 1,
+              text: response.data.answer,
+              sender: "bot",
+              timestamp: new Date(),
+            };
+            setMessages((prev) => [...prev, newBotMessage]);
+          }
+        } catch (error) {
+          console.error("Error getting AI response:", error);
+          toast.error(error.response?.data?.message || "Failed to get AI response", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+          });
+          
+          // Fallback message if API fails
+          const fallbackMessage = {
+            id: Date.now() + 1,
+            text: "I'm having trouble responding right now. Please try again later.",
+            sender: "bot",
+            timestamp: new Date(),
+          };
+          setMessages((prev) => [...prev, fallbackMessage]);
+        } finally {
+          setIsTyping(false);
+        }
+      };
 
-        const randomResponse =
-          botResponses[Math.floor(Math.random() * botResponses.length)];
-
-        const newBotMessage = {
-          id: Date.now() + 1,
-          text: randomResponse,
-          sender: "bot",
-          timestamp: new Date(),
-        };
-
-        setMessages((prev) => [...prev, newBotMessage]);
-        setIsTyping(false);
-      }, 1500 + Math.random() * 1000);
-
-      return () => clearTimeout(typingTimeout);
+      getAIResponse();
     }
   }, [userChat, hasUserStartedChatting]);
 
@@ -88,17 +135,16 @@ const ChatDashboard = ({
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (message.trim() && !isTyping) {
-      setIsTyping(true);
       setuserChat((prev) => [...prev, message]);
       setMessage("");
     }
   };
 
   const handleKeyDown = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey && !isTyping) {
+    if (e.key === "Enter" && !e.shiftKey && !isTyping) {
       e.preventDefault();
       handleSubmit(e);
     }
@@ -119,19 +165,37 @@ const ChatDashboard = ({
   return (
     <div className="h-full flex flex-col">
       {/* Chat Header */}
-      <header className={`py-4 px-6 border-b ${darkMode ? 'border-gray-700 bg-gray-800/50' : 'border-gray-200 bg-white/50'} backdrop-blur-md`}>
+      <header
+        className={`py-4 px-6 border-b ${
+          darkMode
+            ? "border-gray-700 bg-gray-800/50"
+            : "border-gray-200 bg-white/50"
+        } backdrop-blur-md`}
+      >
         <div className="flex items-center justify-between">
-          <h2 className="text-xl ml-10 mt-2 md:ml-0 font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-600">Chat</h2>
+          <h2 className="text-xl ml-10 mt-2 md:ml-0 font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-600">
+            Chat
+          </h2>
           <div className="flex items-center space-x-2">
             <button
               onClick={clearChat}
-              className={`px-4 py-2 rounded-lg ${darkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-100 hover:bg-gray-200'} transition`}
+              className={`px-4 py-2 rounded-lg ${
+                darkMode
+                  ? "bg-gray-700 hover:bg-gray-600"
+                  : "bg-gray-100 hover:bg-gray-200"
+              } transition`}
             >
-              <FaHistory className={`${darkMode ? 'text-gray-300' : 'text-gray-600'}`} />
+              <FaHistory
+                className={`${darkMode ? "text-gray-300" : "text-gray-600"}`}
+              />
             </button>
             <button
               onClick={toggleDarkMode}
-              className={`px-4 py-2 rounded-lg ${darkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-100 hover:bg-gray-200'} transition`}
+              className={`px-4 py-2 rounded-lg ${
+                darkMode
+                  ? "bg-gray-700 hover:bg-gray-600"
+                  : "bg-gray-100 hover:bg-gray-200"
+              } transition`}
             >
               {darkMode ? (
                 <FaSun className="text-yellow-400" />
@@ -168,7 +232,9 @@ const ChatDashboard = ({
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className={`text-4xl font-bold mb-4 ${darkMode ? 'text-gray-200' : 'text-gray-800'}`}
+                className={`text-4xl font-bold mb-4 ${
+                  darkMode ? "text-gray-200" : "text-gray-800"
+                }`}
               >
                 Hello{" "}
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-pink-500 leading-tight font-bold">
@@ -179,7 +245,9 @@ const ChatDashboard = ({
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
-                className={`text-xl mb-8 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}
+                className={`text-xl mb-8 ${
+                  darkMode ? "text-gray-400" : "text-gray-600"
+                }`}
               >
                 How can I help you today?
               </motion.p>
@@ -190,24 +258,54 @@ const ChatDashboard = ({
                 className="grid grid-cols-1 md:grid-cols-2 gap-4"
               >
                 <button
-                  className={`p-4 rounded-lg border transition transform hover:scale-[1.02] ${darkMode ? 'bg-gray-800 border-gray-700 hover:bg-gray-700' : 'bg-white border-gray-200 hover:bg-gray-50 shadow-sm'}`}
+                  className={`p-4 rounded-lg border transition transform hover:scale-[1.02] ${
+                    darkMode
+                      ? "bg-gray-800 border-gray-700 hover:bg-gray-700"
+                      : "bg-white border-gray-200 hover:bg-gray-50 shadow-sm"
+                  }`}
                   onClick={() => {
                     setuserChat(["What can you do?"]);
                   }}
                 >
-                  <h3 className={`font-medium mb-1 ${darkMode ? 'text-white' : 'text-gray-900'}`}>Capabilities</h3>
-                  <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                  <h3
+                    className={`font-medium mb-1 ${
+                      darkMode ? "text-white" : "text-gray-900"
+                    }`}
+                  >
+                    Capabilities
+                  </h3>
+                  <p
+                    className={`text-sm ${
+                      darkMode ? "text-gray-400" : "text-gray-600"
+                    }`}
+                  >
                     Learn what I can help with
                   </p>
                 </button>
                 <button
-                  className={`p-4 rounded-lg border transition transform hover:scale-[1.02] ${darkMode ? 'bg-gray-800 border-gray-700 hover:bg-gray-700' : 'bg-white border-gray-200 hover:bg-gray-50 shadow-sm'}`}
+                  className={`p-4 rounded-lg border transition transform hover:scale-[1.02] ${
+                    darkMode
+                      ? "bg-gray-800 border-gray-700 hover:bg-gray-700"
+                      : "bg-white border-gray-200 hover:bg-gray-50 shadow-sm"
+                  }`}
                   onClick={() => {
                     setuserChat(["Give me some examples"]);
                   }}
                 >
-                  <h3 className={`font-medium mb-1 ${darkMode ? 'text-white' : 'text-gray-900'}`}>Examples</h3>
-                  <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>See what I can do</p>
+                  <h3
+                    className={`font-medium mb-1 ${
+                      darkMode ? "text-white" : "text-gray-900"
+                    }`}
+                  >
+                    Examples
+                  </h3>
+                  <p
+                    className={`text-sm ${
+                      darkMode ? "text-gray-400" : "text-gray-600"
+                    }`}
+                  >
+                    See what I can do
+                  </p>
                 </button>
               </motion.div>
               {/* Start Chatting Button */}
@@ -228,7 +326,11 @@ const ChatDashboard = ({
           </div>
         ) : (
           // Chat Interface
-          <div className={`flex-1 flex flex-col ${darkMode ? 'bg-gray-900/50' : 'bg-gray-50'} overflow-hidden`}>
+          <div
+            className={`flex-1 flex flex-col ${
+              darkMode ? "bg-gray-900/50" : "bg-gray-50"
+            } overflow-hidden`}
+          >
             {/* Messages Container */}
             <div className="flex-1 p-4 overflow-y-auto">
               <div className="max-w-4xl mx-auto space-y-6">
@@ -250,8 +352,16 @@ const ChatDashboard = ({
                       }`}
                     >
                       {message.sender === "bot" && (
-                        <div className={`flex-shrink-0 h-10 w-10 rounded-full ${darkMode ? 'bg-gray-700' : 'bg-gray-200'} flex items-center justify-center mr-3`}>
-                          <FaRobot className={`w-5 h-5 ${darkMode ? 'text-gray-200' : 'text-gray-600'}`} />
+                        <div
+                          className={`flex-shrink-0 h-10 w-10 rounded-full ${
+                            darkMode ? "bg-gray-700" : "bg-gray-200"
+                          } flex items-center justify-center mr-3`}
+                        >
+                          <FaRobot
+                            className={`w-5 h-5 ${
+                              darkMode ? "text-gray-200" : "text-gray-600"
+                            }`}
+                          />
                         </div>
                       )}
                       <motion.div
@@ -259,25 +369,77 @@ const ChatDashboard = ({
                         animate={{ scale: 1 }}
                         className={`p-4 rounded-xl relative ${
                           message.sender === "user"
-                            ? `${darkMode ? 'bg-indigo-600/90' : 'bg-indigo-500/90'} rounded-br-none text-white`
-                            : `${darkMode ? 'bg-gray-800/80' : 'bg-white'} ${darkMode ? 'rounded-bl-none' : 'rounded-bl-none border border-gray-200'}`
+                            ? `${
+                                darkMode
+                                  ? "bg-indigo-600/90"
+                                  : "bg-indigo-500/90"
+                              } rounded-br-none text-white`
+                            : `${darkMode ? "bg-gray-800/80" : "bg-white"} ${
+                                darkMode
+                                  ? "rounded-bl-none"
+                                  : "rounded-bl-none border border-gray-200"
+                              }`
                         }`}
                       >
-                        <p className={message.sender === "user" ? "text-white" : darkMode ? "text-gray-100" : "text-gray-800"}>
+                        <p
+                          className={
+                            message.sender === "user"
+                              ? "text-white"
+                              : darkMode
+                              ? "text-gray-100"
+                              : "text-gray-800"
+                          }
+                        >
                           {message.text}
                         </p>
-                        <div className={`text-xs mt-2 flex items-center ${message.sender === 'user' ? 'justify-end' : 'justify-between'}`}>
-                          {message.sender === 'bot' && (
+                        <div
+                          className={`text-xs mt-2 flex items-center ${
+                            message.sender === "user"
+                              ? "justify-end"
+                              : "justify-between"
+                          }`}
+                        >
+                          {message.sender === "bot" && (
                             <div className="flex space-x-2">
-                              <button className={`p-1 rounded ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'}`}>
-                                <FaThumbsUp className={`w-3 h-3 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`} />
+                              <button
+                                className={`p-1 rounded ${
+                                  darkMode
+                                    ? "hover:bg-gray-700"
+                                    : "hover:bg-gray-100"
+                                }`}
+                              >
+                                <FaThumbsUp
+                                  className={`w-3 h-3 ${
+                                    darkMode ? "text-gray-400" : "text-gray-500"
+                                  }`}
+                                />
                               </button>
-                              <button className={`p-1 rounded ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'}`}>
-                                <FaThumbsDown className={`w-3 h-3 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`} />
+                              <button
+                                className={`p-1 rounded ${
+                                  darkMode
+                                    ? "hover:bg-gray-700"
+                                    : "hover:bg-gray-100"
+                                }`}
+                              >
+                                <FaThumbsDown
+                                  className={`w-3 h-3 ${
+                                    darkMode ? "text-gray-400" : "text-gray-500"
+                                  }`}
+                                />
                               </button>
                             </div>
                           )}
-                          <span className={`${message.sender === 'user' ? darkMode ? 'text-indigo-200' : 'text-indigo-100' : darkMode ? 'text-gray-500' : 'text-gray-400'}`}>
+                          <span
+                            className={`${
+                              message.sender === "user"
+                                ? darkMode
+                                  ? "text-indigo-200"
+                                  : "text-indigo-100"
+                                : darkMode
+                                ? "text-gray-500"
+                                : "text-gray-400"
+                            }`}
+                          >
                             {message.timestamp.toLocaleTimeString([], {
                               hour: "2-digit",
                               minute: "2-digit",
@@ -295,14 +457,40 @@ const ChatDashboard = ({
                     className="flex justify-start"
                   >
                     <div className="flex max-w-[85%]">
-                      <div className={`flex-shrink-0 h-10 w-10 rounded-full ${darkMode ? 'bg-gray-700' : 'bg-gray-200'} flex items-center justify-center mr-3`}>
-                        <FaRobot className={`w-5 h-5 ${darkMode ? 'text-gray-200' : 'text-gray-600'}`} />
+                      <div
+                        className={`flex-shrink-0 h-10 w-10 rounded-full ${
+                          darkMode ? "bg-gray-700" : "bg-gray-200"
+                        } flex items-center justify-center mr-3`}
+                      >
+                        <FaRobot
+                          className={`w-5 h-5 ${
+                            darkMode ? "text-gray-200" : "text-gray-600"
+                          }`}
+                        />
                       </div>
-                      <div className={`p-4 rounded-xl ${darkMode ? 'bg-gray-800/80' : 'bg-white border border-gray-200'} rounded-bl-none`}>
+                      <div
+                        className={`p-4 rounded-xl ${
+                          darkMode
+                            ? "bg-gray-800/80"
+                            : "bg-white border border-gray-200"
+                        } rounded-bl-none`}
+                      >
                         <div className="flex space-x-2">
-                          <div className={`w-2 h-2 rounded-full ${darkMode ? 'bg-gray-500' : 'bg-gray-400'} animate-pulse`}></div>
-                          <div className={`w-2 h-2 rounded-full ${darkMode ? 'bg-gray-500' : 'bg-gray-400'} animate-pulse delay-100`}></div>
-                          <div className={`w-2 h-2 rounded-full ${darkMode ? 'bg-gray-500' : 'bg-gray-400'} animate-pulse delay-200`}></div>
+                          <div
+                            className={`w-2 h-2 rounded-full ${
+                              darkMode ? "bg-gray-500" : "bg-gray-400"
+                            } animate-pulse`}
+                          ></div>
+                          <div
+                            className={`w-2 h-2 rounded-full ${
+                              darkMode ? "bg-gray-500" : "bg-gray-400"
+                            } animate-pulse delay-100`}
+                          ></div>
+                          <div
+                            className={`w-2 h-2 rounded-full ${
+                              darkMode ? "bg-gray-500" : "bg-gray-400"
+                            } animate-pulse delay-200`}
+                          ></div>
                         </div>
                       </div>
                     </div>
@@ -313,7 +501,13 @@ const ChatDashboard = ({
             </div>
 
             {/* Chat Input */}
-            <div className={`p-4 border-t ${darkMode ? 'border-gray-700 bg-gray-800/50' : 'border-gray-200 bg-white/50'} backdrop-blur-md`}>
+            <div
+              className={`p-4 border-t ${
+                darkMode
+                  ? "border-gray-700 bg-gray-800/50"
+                  : "border-gray-200 bg-white/50"
+              } backdrop-blur-md`}
+            >
               <form onSubmit={handleSubmit} className="max-w-4xl mx-auto">
                 <div className="relative flex items-center">
                   {/* File attachment button */}
@@ -341,13 +535,27 @@ const ChatDashboard = ({
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     onKeyDown={handleKeyDown}
-                    placeholder={isTyping ? "EndVerse is responding..." : "Message EndVerse AI..."}
+                    placeholder={
+                      isTyping
+                        ? "EndVerse is responding..."
+                        : "Message EndVerse AI..."
+                    }
                     rows={1}
                     disabled={isTyping}
-                    className={`w-full ${darkMode ? 'bg-gray-700 text-white placeholder-gray-400' : 'bg-white text-gray-900 placeholder-gray-500'} border ${
-                      isTyping ? 'border-indigo-500' : darkMode ? 'border-gray-600' : 'border-gray-300'
-                    } rounded-full py-3 pl-5 pr-16 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all resize-none max-h-32 overflow-hidden ${isTyping ? 'cursor-not-allowed' : ''}`}
-                    style={{ minHeight: '48px' }}
+                    className={`w-full ${
+                      darkMode
+                        ? "bg-gray-700 text-white placeholder-gray-400"
+                        : "bg-white text-gray-900 placeholder-gray-500"
+                    } border ${
+                      isTyping
+                        ? "border-indigo-500"
+                        : darkMode
+                        ? "border-gray-600"
+                        : "border-gray-300"
+                    } rounded-full py-3 pl-5 pr-16 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all resize-none max-h-32 overflow-hidden ${
+                      isTyping ? "cursor-not-allowed" : ""
+                    }`}
+                    style={{ minHeight: "48px" }}
                   />
 
                   {/* Action buttons */}
@@ -365,7 +573,13 @@ const ChatDashboard = ({
                       <button
                         type="button"
                         disabled={isTyping}
-                        className={`p-2 rounded-full ${darkMode ? 'text-gray-400 hover:text-indigo-400' : 'text-gray-500 hover:text-indigo-500'} transition ${isTyping ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        className={`p-2 rounded-full ${
+                          darkMode
+                            ? "text-gray-400 hover:text-indigo-400"
+                            : "text-gray-500 hover:text-indigo-500"
+                        } transition ${
+                          isTyping ? "opacity-50 cursor-not-allowed" : ""
+                        }`}
                         aria-label="Voice input"
                       >
                         <FaMicrophone className="w-5 h-5" />
@@ -373,8 +587,13 @@ const ChatDashboard = ({
                     )}
                   </div>
                 </div>
-                <div className={`text-xs mt-2 text-center ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>
-                  EndVerse AI may produce inaccurate information about people, places, or facts.
+                <div
+                  className={`text-xs mt-2 text-center ${
+                    darkMode ? "text-gray-500" : "text-gray-400"
+                  }`}
+                >
+                  EndVerse AI may produce inaccurate information about people,
+                  places, or facts.
                 </div>
               </form>
             </div>
