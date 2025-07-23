@@ -2,7 +2,7 @@ const { GoogleGenAI } = require("@google/genai");
 
 const ai = new GoogleGenAI({ apiKey: process.env.CHAT_AI_API_KEY });
 
-async function main({ prompt , UsersName }) {
+async function main({ prompt, UsersName }) {
   const response = await ai.models.generateContent({
     model: "gemini-2.5-flash",
     contents: [{ text: prompt }],
@@ -14,7 +14,6 @@ async function main({ prompt , UsersName }) {
       `,
     },
   });
-  console.log(response.text);
   const answer = response.text;
   return answer;
 }
