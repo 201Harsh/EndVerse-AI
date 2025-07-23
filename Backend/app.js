@@ -2,6 +2,7 @@ const express = require("express");
 const ConnectDB = require("./config/database");
 ConnectDB();
 const UserRouter = require("./routes/user.route");
+const AIRouter = require("./routes/ai.route");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 
@@ -16,5 +17,6 @@ app.use(cors(
     }
 ));
 app.use("/users", UserRouter);
+app.use("/ai", AIRouter);
 
 module.exports = app;
