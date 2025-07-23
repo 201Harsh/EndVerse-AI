@@ -174,6 +174,17 @@ const Sidebar = ({
                     <FiUser size={20} className="mr-3" />
                     <span className="text-lg">My Profile</span>
                   </Link>
+                  <button
+                    onClick={handleLogout}
+                    className={`w-full flex items-center p-3 rounded-lg transition ${
+                      darkMode
+                        ? "hover:bg-gray-700 text-gray-300"
+                        : "hover:bg-gray-100 text-gray-700"
+                    }`}
+                  >
+                    <FiLogOut size={20} className="mr-3" />
+                    <span className="text-lg">Logout</span>
+                  </button>
                 </div>
               </div>
             </div>
