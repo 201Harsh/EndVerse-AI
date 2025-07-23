@@ -7,6 +7,7 @@ import OTPVerification from "../Pages/OTPVerification";
 import Dashboard from "../Pages/Dashboard";
 import ProfilePage from "../Pages/ProfilePage";
 import ExamplePage from "../Pages/ExamplePage";
+import DashboardProtector from "../Pages/DashboardProtector";
 
 const Router = () => {
   return (
@@ -16,7 +17,14 @@ const Router = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/verify" element={<OTPVerification />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route
+          path="/dashboard"
+          element={
+            <DashboardProtector>
+              <Dashboard />
+            </DashboardProtector>
+          }
+        />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/examples" element={<ExamplePage />} />
       </Routes>
