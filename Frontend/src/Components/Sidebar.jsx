@@ -10,6 +10,7 @@ import {
   FiChevronLeft,
   FiChevronRight,
   FiUser,
+  FiCode,
 } from "react-icons/fi";
 import { Link } from "react-router-dom";
 
@@ -30,6 +31,7 @@ const Sidebar = ({
     { id: "chat", icon: <FiMessageSquare size={20} />, label: "Chat" },
     { id: "image", icon: <FiImage size={20} />, label: "Image" },
     { id: "video", icon: <FiVideo size={20} />, label: "Video" },
+    { id: "Code", icon: <FiCode size={20} />, label: "Code" },
   ];
 
   // For mobile, we want the sidebar to overlay and take full width when open

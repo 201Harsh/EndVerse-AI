@@ -8,6 +8,7 @@ import Sidebar from "../Components/Sidebar";
 import ChatDashboard from "../Components/ChatDashboard";
 import ImageDashboard from "../Components/ImageDashboard";
 import VideoDashboard from "../Components/VideoDashboard";
+import CodeDashboard from "../Components/CodeDashboard";
 
 const Dashboard = () => {
   const [showFollowPopup, setShowFollowPopup] = useState(false);
@@ -102,6 +103,22 @@ const Dashboard = () => {
             darkMode={darkMode}
             toggleDarkMode={toggleDarkMode}
             clearChat={clearChat}
+          />
+        );
+        case "Code":
+        return (
+          <CodeDashboard
+            darkMode={darkMode}
+            toggleDarkMode={toggleDarkMode}
+            clearChat={clearChat}
+            isTyping={isTyping}
+            setIsTyping={setIsTyping}
+            messages={messages}
+            setMessages={setMessages}
+            userChat={userChat}
+            setuserChat={setuserChat}
+            hasUserStartedChatting={hasUserStartedChatting}
+            setHasUserStartedChatting={setHasUserStartedChatting}
           />
         );
       default:
