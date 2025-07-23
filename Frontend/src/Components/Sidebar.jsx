@@ -11,8 +11,9 @@ import {
   FiChevronRight,
   FiUser,
   FiCode,
+  FiLogOut,
 } from "react-icons/fi";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Sidebar = ({
   isMobile,
@@ -33,6 +34,13 @@ const Sidebar = ({
     { id: "video", icon: <FiVideo size={20} />, label: "Video" },
     { id: "Code", icon: <FiCode size={20} />, label: "Code" },
   ];
+
+  const Navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.clear();
+    Navigate("/");
+  };
 
   // For mobile, we want the sidebar to overlay and take full width when open
   if (isMobile) {
@@ -334,6 +342,20 @@ const Sidebar = ({
               <FiUser size={20} className={isCollapsed ? "" : "mr-3"} />
               {!isCollapsed && <span>My Profile</span>}
             </Link>
+            <button
+              onClick={handleLogout}
+              className={` flex items-center cursor-pointer ${
+                isCollapsed ? "justify-center w-10 h-10 p-3" : "p-3 w-full"
+              } rounded-lg transition ${
+                darkMode
+                  ? "hover:bg-gray-700 text-gray-300"
+                  : "hover:bg-gray-100 text-gray-700"
+              }`}
+              title={isCollapsed ? "My Profile" : ""}
+            >
+              <FiLogOut size={20} className={isCollapsed ? "" : "mr-3"} />
+              {!isCollapsed && <span>Logout</span>}
+            </button>
           </div>
         </div>
       </div>
