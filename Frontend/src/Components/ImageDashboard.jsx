@@ -10,12 +10,17 @@ import {
   FiPlus,
   FiRefreshCw
 } from "react-icons/fi";
-import { FaMagic, FaPalette, FaExpand } from "react-icons/fa";
+import { FaMagic, FaPalette, FaExpand, FaRobot, FaImage } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import { Bounce, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const ImageDashboard = ({ darkMode, toggleDarkMode, clearHistory }) => {
+const ImageDashboard = ({ 
+  darkMode, 
+  toggleDarkMode, 
+  clearHistory,
+  isCollapsed 
+}) => {
   // State management
   const [prompt, setPrompt] = useState("");
   const [style, setStyle] = useState("realistic");
@@ -29,9 +34,11 @@ const ImageDashboard = ({ darkMode, toggleDarkMode, clearHistory }) => {
   const [credits, setCredits] = useState(10);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [currentFullscreenImage, setCurrentFullscreenImage] = useState(null);
+  const [hasUserStarted, setHasUserStarted] = useState(false);
 
-  // Create ref for the output panel
+  // Create refs
   const outputPanelRef = useRef(null);
+  const userName = localStorage.getItem("name") || "EndVerse User";
 
   // Sample image styles
   const styles = [
@@ -51,6 +58,15 @@ const ImageDashboard = ({ darkMode, toggleDarkMode, clearHistory }) => {
     "Underwater kingdom with mermaids",
     "Steampunk airship in the clouds"
   ];
+
+  // Show welcome message initially
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setHasUserStarted(true);
+    }, 3000);
+    
+    return () => clearTimeout(timer);
+  }, []);
 
   // Function to scroll to bottom of output panel
   const scrollToBottom = () => {
@@ -103,7 +119,7 @@ const ImageDashboard = ({ darkMode, toggleDarkMode, clearHistory }) => {
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
-        theme: "dark",
+        theme: darkMode ? "dark" : "light",
         transition: Bounce,
       });
 
@@ -136,7 +152,7 @@ const ImageDashboard = ({ darkMode, toggleDarkMode, clearHistory }) => {
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
-        theme: "dark",
+        theme: darkMode ? "dark" : "light",
         transition: Bounce,
     });
   };
@@ -157,7 +173,7 @@ const ImageDashboard = ({ darkMode, toggleDarkMode, clearHistory }) => {
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
-        theme: "dark",
+        theme: darkMode ? "dark" : "light",
         transition: Bounce,
     });
   };
@@ -173,15 +189,54 @@ const ImageDashboard = ({ darkMode, toggleDarkMode, clearHistory }) => {
     return new Date(timestamp).toLocaleString();
   };
 
+  if (!hasUserStarted) {
+    return (
+      <div className={`flex-1 flex flex-col items-center justify-center p-6 ${darkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="text-center"
+        >
+          <motion.div
+            initial={{ scale: 0.8 }}
+            animate={{ scale: 1 }}
+            transition={{ type: "spring", stiffness: 200 }}
+            className="flex justify-center mb-6"
+          >
+            <div className="w-20 h-20 rounded-full bg-gradient-to-r from-purple-600 to-blue-500 flex items-center justify-center">
+              <FaImage className="text-white text-3xl" />
+            </div>
+          </motion.div>
+          <motion.h2
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className="text-4xl font-bold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-500"
+          >
+            Welcome, {userName}!
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+            className="text-xl text-gray-500"
+          >
+            Ready to create amazing AI art?
+          </motion.p>
+        </motion.div>
+      </div>
+    );
+  }
+
   return (
-    <div className={`flex flex-col min-h-screen ${darkMode ? 'bg-gray-900 text-gray-100' : 'bg-gray-50 text-gray-900'}`}>
-      
+    <div className={`flex flex-col h-full ${darkMode ? 'bg-gray-900 text-gray-100' : 'bg-gray-50 text-gray-900'}`}>
       {/* Header */}
-      <header className={`p-4 border-b ${darkMode ? 'border-gray-800 bg-gray-900' : 'border-gray-200 bg-white'}`}>
-        <div className="container mx-auto flex justify-between items-center">
+      <header className={`p-4 border-b ${darkMode ? 'border-gray-800 bg-gray-900/50' : 'border-gray-200 bg-white/50'} backdrop-blur-md`}>
+        <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <FaMagic className="text-indigo-500 text-xl" />
-            <h1 className="text-xl ml-5 md:ml-0 font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-purple-600">
+            <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-purple-600">
               Image Generation
             </h1>
           </div>
@@ -193,7 +248,7 @@ const ImageDashboard = ({ darkMode, toggleDarkMode, clearHistory }) => {
                   setTimeout(scrollToBottom, 100);
                 }
               }}
-              className={`flex items-center space-x-1 p-2 rounded-lg ${darkMode ? 'hover:bg-gray-800' : 'hover:bg-gray-100'}`}
+              className={`flex items-center space-x-1 p-2 rounded-lg ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'}`}
             >
               <FiClock className={showHistory ? 'text-indigo-500' : ''} />
               <span className="hidden md:inline">History</span>
@@ -206,8 +261,8 @@ const ImageDashboard = ({ darkMode, toggleDarkMode, clearHistory }) => {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 container mx-auto p-4">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <main className={`flex-1 overflow-auto ${isCollapsed ? 'ml-16' : 'ml-64'}`}>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-4">
           {/* Generation Panel */}
           <div className={`rounded-xl p-6 ${darkMode ? 'bg-gray-800/50 border-gray-700' : 'bg-white border-gray-200'} border`}>
             <h2 className="text-2xl font-bold mb-6 flex items-center">
@@ -233,7 +288,7 @@ const ImageDashboard = ({ darkMode, toggleDarkMode, clearHistory }) => {
               <label className="block text-sm font-medium mb-2">
                 Art Style
               </label>
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                 {styles.map((s) => (
                   <motion.button
                     key={s.value}
@@ -390,13 +445,6 @@ const ImageDashboard = ({ darkMode, toggleDarkMode, clearHistory }) => {
                     className="w-full h-auto max-h-[500px] object-contain rounded-lg cursor-zoom-in"
                     onClick={() => toggleFullscreen()}
                   />
-                  {/* <div className={`absolute inset-0 bg-gradient-to-t ${darkMode ? 'from-gray-900/80' : 'from-white/80'} to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4`}>
-                    <div>
-                      <p className="font-medium">Prompt:</p>
-                      <p className="text-sm">{prompt}</p>
-                      <p className="text-xs mt-1 opacity-80">Style: {style}</p>
-                    </div>
-                  </div> */}
                 </div>
               ) : (
                 <div className="text-center p-8">
@@ -418,7 +466,7 @@ const ImageDashboard = ({ darkMode, toggleDarkMode, clearHistory }) => {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              className={`mt-8 rounded-xl overflow-hidden ${darkMode ? 'bg-gray-800/50 border-gray-700' : 'bg-white border-gray-200'} border`}
+              className={`mt-8 mx-4 rounded-xl overflow-hidden ${darkMode ? 'bg-gray-800/50 border-gray-700' : 'bg-white border-gray-200'} border`}
             >
               <div className={`p-4 border-b ${darkMode ? 'border-gray-700' : 'border-gray-200'} flex justify-between items-center`}>
                 <h2 className="font-bold flex items-center">

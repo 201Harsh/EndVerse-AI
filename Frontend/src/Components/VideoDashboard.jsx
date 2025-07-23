@@ -106,7 +106,7 @@ const VideoDashboard = () => {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.7 }}
           >
-            <p>In the meantime, enjoy our chat feature!</p>
+            <p>In the meantime, enjoy our Other features!</p>
           </motion.div>
         </motion.div>
       )}
