@@ -14,6 +14,7 @@ import {
 } from "react-icons/fa";
 import axiosInstance from "../config/Axios";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const ChatDashboard = ({
   darkMode,
@@ -34,6 +35,8 @@ const ChatDashboard = ({
   const inputRef = useRef(null);
   const userName = localStorage.getItem("name") || "EndVerse User";
 
+  const Navigate = useNavigate();
+
   // Load saved messages from localStorage on component mount
   useEffect(() => {
     const savedMessages = localStorage.getItem("chat_messages");
@@ -41,12 +44,12 @@ const ChatDashboard = ({
       try {
         const parsedMessages = JSON.parse(savedMessages);
         // Convert string timestamps back to Date objects
-        const messagesWithDates = parsedMessages.map(msg => ({
+        const messagesWithDates = parsedMessages.map((msg) => ({
           ...msg,
-          timestamp: new Date(msg.timestamp)
+          timestamp: new Date(msg.timestamp),
         }));
         setMessages(messagesWithDates);
-        
+
         // If there are messages, set hasUserStartedChatting to true
         if (messagesWithDates.length > 0) {
           setHasUserStartedChatting(true);
@@ -90,7 +93,7 @@ const ChatDashboard = ({
           const response = await axiosInstance.post("/ai/chat", {
             prompt: userChat[userChat.length - 1],
           });
-          
+
           if (response.status === 200) {
             const newBotMessage = {
               id: Date.now() + 1,
@@ -102,17 +105,20 @@ const ChatDashboard = ({
           }
         } catch (error) {
           console.error("Error getting AI response:", error);
-          toast.error(error.response?.data?.message || "Failed to get AI response", {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "dark",
-          });
-          
+          toast.error(
+            error.response?.data?.message || "Failed to get AI response",
+            {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "dark",
+            }
+          );
+
           // Fallback message if API fails
           const fallbackMessage = {
             id: Date.now() + 1,
@@ -160,6 +166,10 @@ const ChatDashboard = ({
 
   const triggerFileInput = () => {
     fileInputRef.current.click();
+  };
+
+  const RedirectToPage = () => {
+    Navigate("/examples");
   };
 
   return (
@@ -263,9 +273,7 @@ const ChatDashboard = ({
                       ? "bg-gray-800 border-gray-700 hover:bg-gray-700"
                       : "bg-white border-gray-200 hover:bg-gray-50 shadow-sm"
                   }`}
-                  onClick={() => {
-                    setuserChat(["What can you do?"]);
-                  }}
+                  onClick={RedirectToPage}
                 >
                   <h3
                     className={`font-medium mb-1 ${
@@ -288,9 +296,7 @@ const ChatDashboard = ({
                       ? "bg-gray-800 border-gray-700 hover:bg-gray-700"
                       : "bg-white border-gray-200 hover:bg-gray-50 shadow-sm"
                   }`}
-                  onClick={() => {
-                    setuserChat(["Give me some examples"]);
-                  }}
+                  onClick={RedirectToPage}
                 >
                   <h3
                     className={`font-medium mb-1 ${
