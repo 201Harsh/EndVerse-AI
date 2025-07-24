@@ -73,7 +73,11 @@ const ChatDashboard = ({
           ...msg,
           timestamp: new Date(msg.timestamp),
         }));
-        setMessages(messagesWithDates);
+
+        // Only set messages if they're different from current ones
+        if (JSON.stringify(messagesWithDates) !== JSON.stringify(messages)) {
+          setMessages(messagesWithDates);
+        }
 
         if (messagesWithDates.length > 0) {
           setHasUserStartedChatting(true);
@@ -94,7 +98,7 @@ const ChatDashboard = ({
         });
       }
     }
-  }, []);
+  }, []); // Empty dependency array ensures this runs only once on mount
 
   // Save messages to localStorage whenever they change
   useEffect(() => {
@@ -109,74 +113,83 @@ const ChatDashboard = ({
   // Handle incoming messages
   useEffect(() => {
     if (userChat && userChat.length > 0) {
-      if (!hasUserStartedChatting) setHasUserStartedChatting(true);
+      const lastUserMessage = userChat[userChat.length - 1];
 
-      const newUserMessage = {
-        id: Date.now(),
-        text: userChat[userChat.length - 1],
-        sender: "user",
-        timestamp: new Date(),
-      };
+      // Check if this message is already in our messages state
+      const isDuplicate = messages.some(
+        (msg) => msg.sender === "user" && msg.text === lastUserMessage
+      );
 
-      setMessages((prev) => [...prev, newUserMessage]);
+      if (!isDuplicate) {
+        if (!hasUserStartedChatting) setHasUserStartedChatting(true);
 
-      const getAIResponse = async () => {
-        setIsTyping(true);
-        const token = localStorage.getItem("token");
-        try {
-          const response = await axiosInstance.post(
-            "/ai/chat",
-            {
-              prompt: userChat[userChat.length - 1],
-            },
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
+        const newUserMessage = {
+          id: Date.now(),
+          text: lastUserMessage,
+          sender: "user",
+          timestamp: new Date(),
+        };
+
+        setMessages((prev) => [...prev, newUserMessage]);
+
+        const getAIResponse = async () => {
+          setIsTyping(true);
+          const token = localStorage.getItem("token");
+          try {
+            const response = await axiosInstance.post(
+              "/ai/chat",
+              {
+                prompt: lastUserMessage,
               },
-            }
-          );
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            );
 
-          if (response.status === 200) {
-            const newBotMessage = {
+            if (response.status === 200) {
+              const newBotMessage = {
+                id: Date.now() + 1,
+                text: response.data.answer,
+                sender: "bot",
+                timestamp: new Date(),
+              };
+              setMessages((prev) => [...prev, newBotMessage]);
+            }
+          } catch (error) {
+            console.error("Error getting AI response:", error);
+            toast.error(
+              error.response?.data?.message || "Failed to get AI response",
+              {
+                position: "bottom-left",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: false,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+                transition: Bounce,
+              }
+            );
+
+            const fallbackMessage = {
               id: Date.now() + 1,
-              text: response.data.answer,
+              text: "I'm having trouble responding right now. Please try again later.",
               sender: "bot",
               timestamp: new Date(),
             };
-            setMessages((prev) => [...prev, newBotMessage]);
+            setMessages((prev) => [...prev, fallbackMessage]);
+          } finally {
+            setIsTyping(false);
           }
-        } catch (error) {
-          console.error("Error getting AI response:", error);
-          toast.error(
-            error.response?.data?.message || "Failed to get AI response",
-            {
-              position: "bottom-left",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: false,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: "dark",
-              transition: Bounce,
-            }
-          );
+        };
 
-          const fallbackMessage = {
-            id: Date.now() + 1,
-            text: "I'm having trouble responding right now. Please try again later.",
-            sender: "bot",
-            timestamp: new Date(),
-          };
-          setMessages((prev) => [...prev, fallbackMessage]);
-        } finally {
-          setIsTyping(false);
-        }
-      };
-
-      getAIResponse();
+        getAIResponse();
+      }
     }
-  }, [userChat, hasUserStartedChatting]);
+  }, [userChat]); // Only depend on userChat
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
