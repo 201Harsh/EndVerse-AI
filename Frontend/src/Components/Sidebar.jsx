@@ -15,6 +15,7 @@ import {
 } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
 import axiosInstance from "../config/Axios";
+import { toast, Bounce } from "react-toastify";
 
 const Sidebar = ({
   isMobile,
@@ -38,11 +39,32 @@ const Sidebar = ({
 
   const Navigate = useNavigate();
 
-  const handleLogout = () => {
-    const res = axiosInstance.post("/users/logout");
-    if (res.status === 200) {
-      localStorage.clear();
-      toast.success(res.data.message, {
+  const handleLogout = async () => {
+    const token = localStorage.getItem("token");
+    try {
+      const res = await axiosInstance.post("/users/logout", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (res.status === 200) {
+        localStorage.clear();
+        toast.success(res.data.message, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+          transition: Bounce,
+        });
+        Navigate("/");
+      }
+    } catch (error) {
+      console.log(error)
+      toast.error(error.response.data.message, {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -53,7 +75,6 @@ const Sidebar = ({
         theme: "dark",
         transition: Bounce,
       });
-      Navigate("/");
     }
   };
 

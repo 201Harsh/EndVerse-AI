@@ -70,6 +70,8 @@ module.exports.verifyEmailUser = async (req, res) => {
 
     res.cookie("token", token, {
       httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "Strict", // or "Lax"
     });
 
     res.status(200).json({
@@ -112,6 +114,8 @@ module.exports.loginUser = async (req, res) => {
 
     res.cookie("token", token, {
       httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "Strict", // or "Lax"
     });
 
     res.status(200).json({
@@ -125,7 +129,6 @@ module.exports.loginUser = async (req, res) => {
     });
   }
 };
-
 
 module.exports.getUserProfile = async (req, res) => {
   try {
@@ -158,4 +161,4 @@ module.exports.logoutUser = async (req, res) => {
       message: error.message,
     });
   }
-}
+};

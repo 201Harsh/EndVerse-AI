@@ -14,7 +14,7 @@ module.exports.authUser = (req, res, next) => {
     next();
   } catch (error) {
     return res.status(401).json({
-      message: "Access Denied:  Invalid Or Not Logged In",
+      message: "unauthorized Access",
     });
   }
 };
