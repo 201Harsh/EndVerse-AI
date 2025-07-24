@@ -369,8 +369,9 @@ const CodeDashboard = ({
               </label>
               <textarea
                 value={prompt}
+                autoFocus
                 onChange={(e) => setPrompt(e.target.value)}
-                className={`w-full ${
+                className={`w-full resize-none ${
                   isMobile ? "h-24" : "h-32"
                 } p-3 rounded-lg ${
                   darkMode
