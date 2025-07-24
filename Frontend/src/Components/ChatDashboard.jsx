@@ -300,7 +300,8 @@ const ChatDashboard = ({
 
   const formatTextContent = (text) => {
     return text.split("\n").map((line, lineIndex) => {
-      if (line.trim() === "") return null;
+      // Skip empty lines or lines starting with ##
+      if (line.trim() === "" || line.trim().startsWith("##")) return null;
 
       const regex =
         /(<a\s+[^>]*href="[^"]*"[^>]*>.*?<\/a>|\*\*\*.*?\*\*\*|\*\*.*?\*\*|\*.*?\*|".*?"|[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F700}-\u{1F77F}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{2600}-\u{26FF}\u{2700}-\u{27BF}])/gu;
@@ -681,7 +682,7 @@ const ChatDashboard = ({
 
         {/* Chat Input */}
         <div
-          className={`p-4 border-t ${
+          className={`p-3 border-t ${
             darkMode
               ? "border-gray-700 bg-gray-800/50"
               : "border-gray-200 bg-white/50"
@@ -739,13 +740,13 @@ const ChatDashboard = ({
                     }`}
                     aria-label="Voice input"
                   >
-                    <PiSpeakerHighFill className="w-5 h-5" />
+                    <FaMicrophone className="w-5 h-5" />
                   </button>
                 )}
               </div>
             </div>
             <div
-              className={`text-xs mt-2 text-center ${
+              className={`text-xs mt-0 md:mt-2 text-center ${
                 darkMode ? "text-gray-500" : "text-gray-400"
               }`}
             >
