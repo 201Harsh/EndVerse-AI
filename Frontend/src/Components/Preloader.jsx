@@ -23,10 +23,10 @@ const Preloader = ({ onComplete }) => {
 
     // Simulate server checks
     const checkIntervals = {
-      aiEngine: setTimeout(() => updateServerStatus('aiEngine'), 500),
-      database: setTimeout(() => updateServerStatus('database'), 800),
-      api: setTimeout(() => updateServerStatus('api'), 1200),
-      auth: setTimeout(() => updateServerStatus('auth'), 1600)
+      aiEngine: setTimeout(() => updateServerStatus('aiEngine'), 1200),
+      database: setTimeout(() => updateServerStatus('database'), 1800),
+      api: setTimeout(() => updateServerStatus('api'), 2200),
+      auth: setTimeout(() => updateServerStatus('auth'), 2800)
     };
 
     return () => {
