@@ -13,6 +13,7 @@ import {
   FaThumbsDown,
   FaStop,
 } from "react-icons/fa";
+import { PiSpeakerHighFill } from "react-icons/pi";
 import axiosInstance from "../config/Axios";
 import { toast, Bounce } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -621,7 +622,7 @@ const ChatDashboard = ({
                         {isSpeaking && currentSpeakingIndex === index ? (
                           <FaStop className="w-3 h-3" />
                         ) : (
-                          <FaMicrophone className="w-3 h-3" />
+                          <PiSpeakerHighFill className="w-3 h-3" />
                         )}
                       </button>
                     )}
@@ -738,7 +739,7 @@ const ChatDashboard = ({
                     }`}
                     aria-label="Voice input"
                   >
-                    <FaMicrophone className="w-5 h-5" />
+                    <PiSpeakerHighFill className="w-5 h-5" />
                   </button>
                 )}
               </div>
