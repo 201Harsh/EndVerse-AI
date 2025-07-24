@@ -14,6 +14,7 @@ import { FaMagic, FaPalette, FaExpand, FaRobot, FaImage } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import { Bounce, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axiosInstance from "../config/Axios";
 
 const ImageDashboard = ({
   darkMode,
@@ -30,7 +31,7 @@ const ImageDashboard = ({
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [history, setHistory] = useState([]);
   const [showHistory, setShowHistory] = useState(false);
-  const [orientation, setOrientation] = useState("square");
+  const [orientation, setOrientation] = useState("portrait");
   const [credits, setCredits] = useState(10);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [currentFullscreenImage, setCurrentFullscreenImage] = useState(null);
@@ -85,11 +86,11 @@ const ImageDashboard = ({
 
   // Sample prompts for inspiration
   const samplePrompts = [
-    "A futuristic city at sunset",
     "Magical forest with glowing plants",
     "Portrait of a cyberpunk samurai",
     "Underwater kingdom with mermaids",
     "Steampunk airship in the clouds",
+    "A realistic Image of a Beautiful Woman in Black Dress on a Beach",
   ];
 
   // Show welcome message initially
@@ -111,8 +112,8 @@ const ImageDashboard = ({
     }
   };
 
-  // Mock image generation function
-  const generateImage = () => {
+  // Image generation function
+  const generateImage = async () => {
     if (!prompt.trim() || credits <= 0) return;
 
     setIsGenerating(true);
@@ -121,40 +122,55 @@ const ImageDashboard = ({
     // Simulate progress
     const interval = setInterval(() => {
       setProgress((prev) => {
-        if (prev >= 100) {
+        if (prev >= 90) {
+          // Stop at 90% to wait for API response
           clearInterval(interval);
-          return 100;
+          return 90;
         }
         return prev + 2;
       });
     }, 100);
 
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      const response = await axiosInstance.post("/ai/image", {
+        prompt,
+        style,
+        orientation,
+      });
+
+      if (response.status === 200) {
+        if (response.data && response.data.answer.image) {
+          clearInterval(interval);
+          setProgress(100);
+
+          const newImage = response.data.answer.image;
+          setGeneratedImage(newImage);
+          addToHistory(newImage);
+          setCredits((prev) => prev - 1);
+
+          toast.success("Image generated successfully!", {
+            position: isMobile ? "top-center" : "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: darkMode ? "dark" : "light",
+            transition: Bounce,
+          });
+
+          setTimeout(scrollToBottom, 100);
+        } else {
+          throw new Error("Invalid image data in response");
+        }
+      } else {
+        throw new Error(`API request failed with status ${response.status}`);
+      }
+    } catch (error) {
       clearInterval(interval);
-      setProgress(100);
 
-      // Use a placeholder image service for demo
-      const width =
-        orientation === "portrait"
-          ? 600
-          : orientation === "landscape"
-          ? 800
-          : 700;
-      const height =
-        orientation === "portrait"
-          ? 900
-          : orientation === "landscape"
-          ? 500
-          : 700;
-
-      const newImage = `https://picsum.photos/${width}/${height}?random=${Date.now()}`;
-      setGeneratedImage(newImage);
-      addToHistory(newImage);
-      setCredits((prev) => prev - 1);
-      setIsGenerating(false);
-
-      toast.success("Image generated successfully!", {
+      toast.error("Image generation failed!", {
         position: isMobile ? "top-center" : "top-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -165,10 +181,9 @@ const ImageDashboard = ({
         theme: darkMode ? "dark" : "light",
         transition: Bounce,
       });
-
-      // Scroll to bottom after image is generated
-      setTimeout(scrollToBottom, 100);
-    }, 3000);
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   // Add image to history
@@ -419,21 +434,23 @@ const ImageDashboard = ({
                     <div>
                       <label className="block text-sm mb-2">Orientation</label>
                       <div className="flex gap-2">
-                        {["square", "portrait", "landscape"].map((opt) => (
-                          <button
-                            key={opt}
-                            onClick={() => setOrientation(opt)}
-                            className={`flex-1 py-2 rounded-lg capitalize text-xs sm:text-sm ${
-                              orientation === opt
-                                ? "bg-indigo-600 text-white"
-                                : darkMode
-                                ? "bg-gray-700 hover:bg-gray-600"
-                                : "bg-gray-100 hover:bg-gray-200"
-                            }`}
-                          >
-                            {opt}
-                          </button>
-                        ))}
+                        {["square", "portrait", "landscape", "panorama"].map(
+                          (opt) => (
+                            <button
+                              key={opt}
+                              onClick={() => setOrientation(opt)}
+                              className={`flex-1 py-2 rounded-lg capitalize text-xs sm:text-sm ${
+                                orientation === opt
+                                  ? "bg-indigo-600 text-white"
+                                  : darkMode
+                                  ? "bg-gray-700 hover:bg-gray-600"
+                                  : "bg-gray-100 hover:bg-gray-200"
+                              }`}
+                            >
+                              {opt}
+                            </button>
+                          )
+                        )}
                       </div>
                     </div>
                   </motion.div>
