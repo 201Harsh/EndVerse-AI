@@ -89,10 +89,19 @@ const ChatDashboard = ({
       // Get AI response from backend
       const getAIResponse = async () => {
         setIsTyping(true);
+        const token = localStorage.getItem("token");
         try {
-          const response = await axiosInstance.post("/ai/chat", {
-            prompt: userChat[userChat.length - 1],
-          });
+          const response = await axiosInstance.post(
+            "/ai/chat",
+            {
+              prompt: userChat[userChat.length - 1],
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
 
           if (response.status === 200) {
             const newBotMessage = {
