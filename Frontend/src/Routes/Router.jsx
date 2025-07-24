@@ -8,12 +8,14 @@ import Dashboard from "../Pages/Dashboard";
 import ProfilePage from "../Pages/ProfilePage";
 import ExamplePage from "../Pages/ExamplePage";
 import DashboardProtector from "../Pages/DashboardProtector";
+import AutoRedirector from "../Utils/AutoRedirector";
 
 const Router = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Welcome />} />
+        <Route path="/" element={<AutoRedirector />} />
+        <Route path="/welcome" element={<Welcome />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/verify" element={<OTPVerification />} />
