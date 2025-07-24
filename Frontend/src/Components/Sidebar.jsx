@@ -14,6 +14,7 @@ import {
   FiLogOut,
 } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
+import axiosInstance from "../config/Axios";
 
 const Sidebar = ({
   isMobile,
@@ -38,8 +39,22 @@ const Sidebar = ({
   const Navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.clear();
-    Navigate("/");
+    const res = axiosInstance.post("/users/logout");
+    if (res.status === 200) {
+      localStorage.clear();
+      toast.success(res.data.message, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Bounce,
+      });
+      Navigate("/");
+    }
   };
 
   // For mobile, we want the sidebar to overlay and take full width when open
