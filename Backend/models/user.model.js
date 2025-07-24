@@ -16,6 +16,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  credits: {
+    type: Number,
+    default: 5,
+  },
 });
 
 userSchema.methods.JWT_Token = function () {

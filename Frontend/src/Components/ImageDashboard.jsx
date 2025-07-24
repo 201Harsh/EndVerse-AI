@@ -24,15 +24,12 @@ const ImageDashboard = ({
 }) => {
   // State management
   const [prompt, setPrompt] = useState("");
-  const [style, setStyle] = useState("realistic");
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedImage, setGeneratedImage] = useState(null);
   const [progress, setProgress] = useState(0);
-  const [showAdvanced, setShowAdvanced] = useState(false);
   const [history, setHistory] = useState([]);
   const [showHistory, setShowHistory] = useState(false);
-  const [orientation, setOrientation] = useState("portrait");
-  const [credits, setCredits] = useState(10);
+  const [credits, setCredits] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [currentFullscreenImage, setCurrentFullscreenImage] = useState(null);
   const [hasUserStarted, setHasUserStarted] = useState(false);
@@ -54,35 +51,6 @@ const ImageDashboard = ({
     return () => window.removeEventListener("resize", checkIfMobile);
   }, []);
 
-  // Sample image styles
-  const styles = [
-    {
-      value: "realistic",
-      label: "Realistic",
-      color: "from-blue-500 to-blue-600",
-    },
-    {
-      value: "fantasy",
-      label: "Fantasy",
-      color: "from-purple-500 to-purple-600",
-    },
-    { value: "anime", label: "Anime", color: "from-pink-500 to-pink-600" },
-    {
-      value: "cyberpunk",
-      label: "Cyberpunk",
-      color: "from-indigo-500 to-indigo-600",
-    },
-    {
-      value: "watercolor",
-      label: "Watercolor",
-      color: "from-teal-500 to-teal-600",
-    },
-    {
-      value: "oil_painting",
-      label: "Oil Painting",
-      color: "from-amber-500 to-amber-600",
-    },
-  ];
 
   // Sample prompts for inspiration
   const samplePrompts = [
@@ -112,6 +80,17 @@ const ImageDashboard = ({
     }
   };
 
+  useEffect(() => {
+    const getCresits = async () => {
+      const res = await axiosInstance.get("/users/profile");
+      if (res.status === 200) {
+        setCredits(res.data.user.credits);
+      }
+    };
+
+    getCresits();
+  }, [credits]);
+
   // Image generation function
   const generateImage = async () => {
     if (!prompt.trim() || credits <= 0) return;
@@ -134,8 +113,6 @@ const ImageDashboard = ({
     try {
       const response = await axiosInstance.post("/ai/image", {
         prompt,
-        style,
-        orientation,
       });
 
       if (response.status === 200) {
@@ -192,7 +169,6 @@ const ImageDashboard = ({
       id: Date.now(),
       imageUrl,
       prompt,
-      style,
       timestamp: new Date().toISOString(),
     };
 
@@ -385,77 +361,6 @@ const ImageDashboard = ({
                 } border focus:ring-2 focus:ring-indigo-500 focus:border-transparent`}
                 placeholder="A majestic dragon soaring over mountain peaks..."
               />
-            </div>
-
-            {/* Style Selection */}
-            <div className="mb-4">
-              <label className="block text-sm font-medium mb-2">
-                Art Style
-              </label>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                {styles.map((s) => (
-                  <motion.button
-                    key={s.value}
-                    whileHover={{ scale: 1.03 }}
-                    whileTap={{ scale: 0.97 }}
-                    onClick={() => setStyle(s.value)}
-                    className={`py-2 px-2 rounded-lg text-xs sm:text-sm ${
-                      style === s.value
-                        ? `bg-gradient-to-r ${s.color} text-white`
-                        : darkMode
-                        ? "bg-gray-700 hover:bg-gray-600"
-                        : "bg-gray-100 hover:bg-gray-200"
-                    }`}
-                  >
-                    {s.label}
-                  </motion.button>
-                ))}
-              </div>
-            </div>
-
-            {/* Advanced Options */}
-            <div className="mb-4">
-              <button
-                onClick={() => setShowAdvanced(!showAdvanced)}
-                className="flex items-center text-sm text-indigo-500 hover:text-indigo-600"
-              >
-                <FiSettings className="mr-1" />
-                {showAdvanced ? "Hide" : "Show"} Advanced Options
-              </button>
-
-              <AnimatePresence>
-                {showAdvanced && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    className="mt-3 space-y-3 overflow-hidden"
-                  >
-                    <div>
-                      <label className="block text-sm mb-2">Orientation</label>
-                      <div className="flex gap-2">
-                        {["square", "portrait", "landscape", "panorama"].map(
-                          (opt) => (
-                            <button
-                              key={opt}
-                              onClick={() => setOrientation(opt)}
-                              className={`flex-1 py-2 rounded-lg capitalize text-xs sm:text-sm ${
-                                orientation === opt
-                                  ? "bg-indigo-600 text-white"
-                                  : darkMode
-                                  ? "bg-gray-700 hover:bg-gray-600"
-                                  : "bg-gray-100 hover:bg-gray-200"
-                              }`}
-                            >
-                              {opt}
-                            </button>
-                          )
-                        )}
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
             </div>
 
             {/* Generate Button */}
@@ -675,7 +580,6 @@ const ImageDashboard = ({
                             onClick={() => {
                               setGeneratedImage(item.imageUrl);
                               setPrompt(item.prompt);
-                              setStyle(item.style);
                               setShowHistory(false);
                             }}
                           />
@@ -707,9 +611,6 @@ const ImageDashboard = ({
                               : ""}
                           </p>
                           <div className="flex justify-between items-center mt-1">
-                            <span className="text-[10px] px-2 py-1 rounded-full bg-indigo-500/10 text-indigo-500">
-                              {item.style}
-                            </span>
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -767,9 +668,6 @@ const ImageDashboard = ({
               >
                 <p className={`${isMobile ? "text-sm" : "font-medium"}`}>
                   {prompt}
-                </p>
-                <p className={`${isMobile ? "text-xs" : "text-sm"} opacity-80`}>
-                  Style: {style}
                 </p>
               </div>
             </div>

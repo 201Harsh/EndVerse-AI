@@ -35,7 +35,7 @@ module.exports.ChatAI = async (req, res) => {
 
 module.exports.ImageAI = async (req, res) => {
   try {
-    const { prompt, style, orientation } = req.body;
+    const { prompt} = req.body;
 
     if (!prompt) {
       return res.status(400).json({
@@ -43,10 +43,29 @@ module.exports.ImageAI = async (req, res) => {
       });
     }
 
-    const answer = await ImageAIService({ prompt, style, orientation });
+    const userId = req.user.id;
+
+    const user = await UserModeel.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    if (user.credits <= 0) {
+      return res.status(400).json({
+        error: "Insufficient credits",
+      });
+    }
+
+    const answer = await ImageAIService({ prompt });
     res.status(200).json({
       answer,
     });
+
+    user.credits -= 1;
+    await user.save();
   } catch (error) {
     res.status(500).json({
       message: error.message,

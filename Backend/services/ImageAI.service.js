@@ -1,6 +1,6 @@
 const { GoogleGenAI, Modality } = require("@google/genai");
 
-async function generateImage({ prompt, style, orientation }) {
+async function generateImage({ prompt}) {
   const ai = new GoogleGenAI({ apiKey: process.env.IMAGE_AI_API_KEY });
 
   const systemInstruction = `
@@ -16,12 +16,9 @@ You specialize in generating **photorealistic images of people**, including:
 1. **Realistic Portraits**: Human faces with accurate anatomy, skin textures, and lighting.
 2. **Celebrity Likenesses**: Inspired by famous personalities (*with direct replication*).
 3. **Original Characters**: Unique, believable human characters with distinct features.
-4. **Stylized Realism**: E.g., "hyper-realistic," "cinematic," or "editorial photography" styles.
 
 ## Current Request Parameters
-- **Main Prompt**: "${prompt}"
-- **Style**: ${style} (e.g., hyper-realistic, cinematic, editorial photography,other styles)
-- **Orientation**: ${orientation} (e.g., portrait for close-ups, landscape for scenes)
+- **Main Prompt**: "${prompt} Make sure to use this same prompt."
 - **Quality**: 4k HD (4,096x4,096 pixels)
 
 ## Photorealistic Guidelines
@@ -41,6 +38,12 @@ You specialize in generating **photorealistic images of people**, including:
 - **Allowed**:
   - Generic faces (e.g., "a 30-year-old Hispanic businessman").
   - Stylized versions of public figures (e.g., "Einstein in cyberpunk style").
+- **Prohibited**:
+  - Pornographic content (e.g., "a 30-year-old porn star").
+  - Illegal content (e.g., "a 30-year-old prostitute").
+  - NSFW content (e.g., "a 30-year-old porn star").
+  - Violent content (e.g., "a 30-year-old terrorist").
+  - Content that violates privacy or security policies.
 
 ## Quality Assurance
 1. **Pre-Generation Checks**:
