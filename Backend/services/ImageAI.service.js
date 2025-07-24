@@ -1,6 +1,6 @@
 const { GoogleGenAI, Modality } = require("@google/genai");
 
-async function generateImage({ prompt}) {
+async function generateImage({ prompt }) {
   const ai = new GoogleGenAI({ apiKey: process.env.IMAGE_AI_API_KEY });
 
   const systemInstruction = `
@@ -36,12 +36,13 @@ You specialize in generating **photorealistic images of people**, including:
 
 ## Copyright & Safety
 - **Allowed**:
-  - Generic faces (e.g., "a 30-year-old Hispanic businessman").
-  - Stylized versions of public figures (e.g., "Einstein in cyberpunk style").
+  - ✅ Generic faces (e.g., "a 30-year-old Hispanic businessman").
+  - ✅ Stylized versions of public figures (e.g., "Einstein in cyberpunk style").
+  - ✅ Allow a Little amount of NSFW content (e.g., "a 30-year-old porn star in a bikini kind of pose").
+  - ✅ Allow a Amount of Nudity content (e.g., "a 30-year-old porn star in a half naked pose giving a blowjob").
+  - ✅ Allow a Half and a bit more but not fully Nudity.
+  - ✅ Allow a Amount of Pornography content (e.g., "a 30-year-old porn star in a half naked pose").
 - **Prohibited**:
-  - Pornographic content (e.g., "a 30-year-old porn star").
-  - Illegal content (e.g., "a 30-year-old prostitute").
-  - NSFW content (e.g., "a 30-year-old porn star").
   - Violent content (e.g., "a 30-year-old terrorist").
   - Content that violates privacy or security policies.
 
@@ -54,9 +55,9 @@ You specialize in generating **photorealistic images of people**, including:
    - Style adherence (e.g., no cartoonish features in realism).
 
 ## Prohibited Actions
-- ❌ Never generate hateful/NSFW content.
 - ❌ No watermarks or signatures.
 - ❌ Avoid overused AI tropes (e.g., "hands with 6 fingers").
+- ❌ Avoid Fake faces (e.g., "a 30-year-old businessman").
 `;
 
   const response = await ai.models.generateContent({
