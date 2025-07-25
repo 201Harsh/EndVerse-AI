@@ -34,6 +34,141 @@ const Register = () => {
     toast.dark = darkMode;
   }, [darkMode]);
 
+  // Allowed email domains
+  const allowedDomains = [
+    "gmail.com",
+    "yahoo.com",
+    "outlook.com",
+    "hotmail.com",
+    "icloud.com",
+    "protonmail.com",
+    "aol.com",
+    "mail.com",
+    "zoho.com",
+    "yandex.com",
+  ];
+
+  // Comprehensive list of temporary email domains and patterns to block
+  const blockedEmailPatterns = [
+    // Exact domains
+    "tempmail.com",
+    "mailinator.com",
+    "10minutemail.com",
+    "guerrillamail.com",
+    "yopmail.com",
+    "trashmail.com",
+    "fakeinbox.com",
+    "throwawaymail.com",
+    "temp-mail.org",
+    "maildrop.cc",
+    "getnada.com",
+    "dispostable.com",
+    "mailnesia.com",
+    "mytemp.email",
+    "sharklasers.com",
+    "mail.tm",
+    "tempail.com",
+    "emailondeck.com",
+    "tempinbox.com",
+    "mailmoat.com",
+    "temp-mail.io",
+    "mailbox.in.ua",
+    "inboxbear.com",
+    "tmpmail.org",
+    "temp-mail.net",
+    "throwawayemail.com",
+    "mailcatch.com",
+    "tempemail.net",
+    "mailmetrash.com",
+    "trashmailer.com",
+    "mailnull.com",
+    "ofacer.com",
+    "tempmail.pro",
+
+    // Common patterns for disposable emails
+    /^[a-z0-9]+@(temp|trash|fake|throwaway|disposable)/i,
+    /^[a-z0-9]+@(mailinator|yopmail|guerrillamail)/i,
+    /^[a-z0-9]+@[a-z0-9]+\.(xyz|top|club|site|online)/i,
+    /^[a-z0-9]+@[a-z0-9]+\.(tk|ml|ga|cf|gq)/i,
+    /^[a-z0-9]+@[a-z0-9]+\.(test|example|demo)/i,
+  ];
+
+  const validateEmail = (email) => {
+    // Basic email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      toast.error("Please enter a valid email address", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Bounce,
+      });
+      return false;
+    }
+
+    // Extract domain
+    const domain = email.split("@")[1].toLowerCase();
+
+    // Check if domain is in allowed list
+    const isAllowed = allowedDomains.includes(domain);
+    if (!isAllowed) {
+      toast.error(
+        "Only emails from Gmail, Yahoo, Outlook and other popular providers are allowed",
+        {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+          transition: Bounce,
+        }
+      );
+      return false;
+    }
+
+    // Check against blocked email patterns
+    const fullEmail = email.toLowerCase();
+    const isBlocked = blockedEmailPatterns.some((pattern) => {
+      if (typeof pattern === "string") {
+        return domain === pattern || domain.endsWith(`.${pattern}`);
+      } else if (pattern instanceof RegExp) {
+        return pattern.test(fullEmail);
+      }
+      return false;
+    });
+
+    if (isBlocked) {
+      toast.error("Disposable email addresses are not allowed", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Bounce,
+      });
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleEmailBlur = () => {
+    if (formData.email) {
+      validateEmail(formData.email);
+    }
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -59,6 +194,10 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setisLoading(true);
+
+    if (!validateEmail(formData.email)) {
+      return;
+    }
 
     try {
       const response = await axiosInstance.post("/users/register", formData);
