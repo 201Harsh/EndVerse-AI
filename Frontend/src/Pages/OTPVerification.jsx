@@ -59,10 +59,45 @@ const OTPVerification = () => {
       setOtp(newOtp);
       setActiveInput(Math.min(3, newOtp.length - 1));
 
-    //   // Auto-submit if all digits are pasted
-    //   if (newOtp.length === 4) {
-    //     handleSubmit();
-    //   }
+      //   // Auto-submit if all digits are pasted
+      //   if (newOtp.length === 4) {
+      //     handleSubmit();
+      //   }
+    }
+  };
+
+  const handleOtpResend = async () => {
+    const Useremail = localStorage.getItem("email");
+
+    try {
+      const response = await axiosInstance.post("/users/resend-otp", {
+        email: Useremail,
+      });
+      if (response.status === 200) {
+        toast.success(response.data.msg, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+          transition: Bounce,
+        });
+      }
+    } catch (error) {
+      toast.error(error.response.data.error, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Bounce,
+      });
     }
   };
 
@@ -91,7 +126,7 @@ const OTPVerification = () => {
         });
         setIsSubmitting(false);
         localStorage.setItem("token", res.data.token);
-        localStorage.setItem('name', res.data.user.name);
+        localStorage.setItem("name", res.data.user.name);
         Navigate("/dashboard");
       }
     } catch (error) {
@@ -221,7 +256,10 @@ const OTPVerification = () => {
 
         <div className="mt-6 text-center text-sm text-gray-400">
           Didn't receive code?{" "}
-          <button className="text-indigo-400 hover:text-indigo-300 font-medium">
+          <button
+            onClick={handleOtpResend}
+            className="text-indigo-400 hover:text-indigo-300 font-medium"
+          >
             Resend OTP
           </button>
         </div>

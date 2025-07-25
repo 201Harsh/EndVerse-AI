@@ -193,12 +193,12 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setisLoading(true);
 
     if (!validateEmail(formData.email)) {
       return;
     }
 
+    setisLoading(true);
     try {
       const response = await axiosInstance.post("/users/register", formData);
 
