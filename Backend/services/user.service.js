@@ -1,5 +1,5 @@
 const userModel = require("../models/user.model");
-const TempUserModel = require("../models/tempUser.model");
+const TempUserModel = require("../models/TempUser.model");
 
 module.exports.CreateTempUser = async ({ name, email, password, otp }) => {
   if (!name || !email || !password || !otp) {
