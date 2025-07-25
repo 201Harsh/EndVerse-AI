@@ -123,6 +123,9 @@ const Dashboard = () => {
             setuserChat={setuserChat}
             hasUserStartedChatting={hasUserStartedChatting}
             setHasUserStartedChatting={setHasUserStartedChatting}
+            isMobile={isMobile}
+            isCollapsed={isCollapsed}
+            clearHistory={clearChat}
           />
         );
       default:

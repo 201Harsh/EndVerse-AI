@@ -1,5 +1,6 @@
 const ChatAIService = require("../services/ChatAI.service");
 const ImageAIService = require("../services/ImageAI.service");
+const CodeAIService = require("../services/CodeAI.service");
 const UserModeel = require("../models/user.model");
 
 module.exports.ChatAI = async (req, res) => {
@@ -35,7 +36,7 @@ module.exports.ChatAI = async (req, res) => {
 
 module.exports.ImageAI = async (req, res) => {
   try {
-    const { prompt} = req.body;
+    const { prompt } = req.body;
 
     if (!prompt) {
       return res.status(400).json({
@@ -66,6 +67,27 @@ module.exports.ImageAI = async (req, res) => {
 
     user.credits -= 1;
     await user.save();
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+module.exports.CodeAI = async (req, res) => {
+  try {
+    const { prompt } = req.body;
+
+    if (!prompt) {
+      return res.status(400).json({
+        message: "Prompt is required",
+      });
+    }
+
+    const Code = await CodeAIService({ prompt });
+    res.status(200).json({
+      Code,
+    });
   } catch (error) {
     res.status(500).json({
       message: error.message,

@@ -15,6 +15,7 @@ import { FaMagic, FaRobot, FaExpand } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import { Bounce, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axiosInstance from "../config/Axios";
 
 const CodeDashboard = ({
   darkMode,
@@ -24,7 +25,6 @@ const CodeDashboard = ({
 }) => {
   // State management
   const [prompt, setPrompt] = useState("");
-  const [language, setLanguage] = useState("javascript");
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedCode, setGeneratedCode] = useState("");
   const [progress, setProgress] = useState(0);
@@ -49,30 +49,6 @@ const CodeDashboard = ({
 
     return () => window.removeEventListener("resize", checkIfMobile);
   }, []);
-
-  // Programming languages
-  const languages = [
-    {
-      value: "javascript",
-      label: "JavaScript",
-      color: "from-yellow-500 to-yellow-600",
-    },
-    { value: "python", label: "Python", color: "from-blue-500 to-blue-600" },
-    { value: "java", label: "Java", color: "from-red-500 to-red-600" },
-    { value: "csharp", label: "C#", color: "from-green-500 to-green-600" },
-    { value: "php", label: "PHP", color: "from-purple-500 to-purple-600" },
-    { value: "ruby", label: "Ruby", color: "from-pink-500 to-pink-600" },
-    { value: "swift", label: "Swift", color: "from-amber-500 to-amber-600" },
-    { value: "go", label: "Go", color: "from-teal-500 to-teal-600" },
-    {
-      value: "kotlin",
-      label: "Kotlin",
-      color: "from-orange-500 to-orange-600",
-    },
-    { value: "rust", label: "Rust", color: "from-lime-500 to-lime-600" },
-    { value: "c", label: "C", color: "from-cyan-500 to-cyan-600" },
-    { value: "cpp", label: "C++", color: "from-rose-500 to-rose-600" },
-  ];
 
   // Sample prompts for inspiration
   const samplePrompts = [
@@ -103,8 +79,21 @@ const CodeDashboard = ({
     }
   };
 
-  // Mock code generation function
-  const generateCode = () => {
+  // Format code with syntax highlighting
+  const formatCode = (code) => {
+    if (!code) return null;
+
+    // Split code into lines and process each line
+    return code.split('\n').map((line, i) => (
+      <div key={i} className="code-line">
+        <span className="line-number">{i + 1}</span>
+        <code className={darkMode ? "text-gray-200" : "text-gray-800"}>{line}</code>
+      </div>
+    ));
+  };
+
+  // Generate code from backend
+  const generateCode = async () => {
     if (!prompt.trim()) return;
 
     setIsGenerating(true);
@@ -113,48 +102,24 @@ const CodeDashboard = ({
     // Simulate progress
     const interval = setInterval(() => {
       setProgress((prev) => {
-        if (prev >= 100) {
+        if (prev >= 99) { // Stop at 90% to wait for API response
           clearInterval(interval);
-          return 100;
+          return 90;
         }
         return prev + 2;
       });
     }, 100);
 
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      const res = await axiosInstance.post("/ai/code", { prompt });
+      const newCode = res.data.Code;
+      
       clearInterval(interval);
       setProgress(100);
-
-      // Generate mock code based on language
-      let newCode = "";
-      switch (language) {
-        case "javascript":
-          newCode = `// ${prompt}\nfunction solution() {\n  // Implementation here\n  return result;\n}`;
-          break;
-        case "python":
-          newCode = `# ${prompt}\ndef solution():\n    # Implementation here\n    return result`;
-          break;
-        case "typescript":
-          newCode = `// ${prompt}\nconst solution = (): any => {\n  // Implementation here\n  return result;\n}`;
-          break;
-        case "java":
-          newCode = `// ${prompt}\npublic class Solution {\n  public static void main(String[] args) {\n    // Implementation here\n  }\n}`;
-          break;
-        case "csharp":
-          newCode = `// ${prompt}\npublic class Solution {\n  public static void Main(string[] args) {\n    // Implementation here\n  }\n}`;
-          break;
-        case "php":
-          newCode = `<?php\n// ${prompt}\nfunction solution() {\n  // Implementation here\n  return $result;\n}`;
-          break;
-        default:
-          newCode = `// ${prompt}\n// Code generation for ${language}`;
-      }
-
+      
       setGeneratedCode(newCode);
       addToHistory(newCode);
-      setIsGenerating(false);
-
+      
       toast.success("Code generated successfully!", {
         position: isMobile ? "top-center" : "top-right",
         autoClose: 5000,
@@ -169,7 +134,24 @@ const CodeDashboard = ({
 
       // Scroll to bottom after code is generated
       setTimeout(scrollToBottom, 100);
-    }, 3000);
+    } catch (error) {
+      clearInterval(interval);
+      setProgress(0);
+      
+      toast.error(error.response?.data?.message || "Failed to generate code", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: darkMode ? "dark" : "light",
+        transition: Bounce,
+      });
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   // Add code to history
@@ -178,7 +160,6 @@ const CodeDashboard = ({
       id: Date.now(),
       code,
       prompt,
-      language,
       timestamp: new Date().toISOString(),
     };
 
@@ -223,7 +204,7 @@ const CodeDashboard = ({
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `ai-code-${Date.now()}.${language}`;
+    link.download = `ai-code-${Date.now()}.txt`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -382,32 +363,6 @@ const CodeDashboard = ({
               />
             </div>
 
-            {/* Language Selection */}
-            <div className="mb-4">
-              <label className="block text-sm font-medium mb-2">
-                Programming Language
-              </label>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                {languages.map((lang) => (
-                  <motion.button
-                    key={lang.value}
-                    whileHover={{ scale: 1.03 }}
-                    whileTap={{ scale: 0.97 }}
-                    onClick={() => setLanguage(lang.value)}
-                    className={`py-2 px-2 rounded-lg text-xs sm:text-sm ${
-                      language === lang.value
-                        ? `bg-gradient-to-r ${lang.color} text-white`
-                        : darkMode
-                        ? "bg-gray-700 hover:bg-gray-600"
-                        : "bg-gray-100 hover:bg-gray-200"
-                    }`}
-                  >
-                    {lang.label}
-                  </motion.button>
-                ))}
-              </div>
-            </div>
-
             {/* Generate Button */}
             <motion.button
               onClick={generateCode}
@@ -538,7 +493,9 @@ const CodeDashboard = ({
                         : "bg-gray-100 text-gray-900"
                     }`}
                   >
-                    <code>{generatedCode}</code>
+                    <div className="code-container">
+                      {formatCode(generatedCode)}
+                    </div>
                   </pre>
                 </div>
               ) : (
@@ -632,7 +589,6 @@ const CodeDashboard = ({
                             onClick={() => {
                               setGeneratedCode(item.code);
                               setPrompt(item.prompt);
-                              setLanguage(item.language);
                               setShowHistory(false);
                             }}
                           >
@@ -647,7 +603,7 @@ const CodeDashboard = ({
                               </code>
                             </pre>
                           </div>
-                          <div
+                          {/* <div
                             className={`absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 hover:opacity-100 transition-opacity flex flex-col justify-between p-2`}
                           >
                             <button
@@ -667,7 +623,7 @@ const CodeDashboard = ({
                                 {formatTime(item.timestamp)}
                               </p>
                             </div>
-                          </div>
+                          </div> */}
                         </div>
                         <div className="p-2">
                           <p className="text-xs truncate">
@@ -677,9 +633,6 @@ const CodeDashboard = ({
                               : ""}
                           </p>
                           <div className="flex justify-between items-center mt-1">
-                            <span className="text-[10px] px-2 py-1 rounded-full bg-indigo-500/10 text-indigo-500">
-                              {item.language}
-                            </span>
                             <div className="flex space-x-1">
                               <button
                                 onClick={(e) => {
@@ -770,24 +723,10 @@ const CodeDashboard = ({
                       darkMode ? "text-gray-100" : "text-gray-900"
                     }`}
                   >
-                    <code>{generatedCode}</code>
+                    <div className="code-container">
+                      {formatCode(generatedCode)}
+                    </div>
                   </pre>
-                </div>
-
-                <div
-                  className={`p-2 border-t ${
-                    darkMode ? "border-gray-700" : "border-gray-200"
-                  } text-center text-xs`}
-                >
-                  <span
-                    className={`px-2 py-1 rounded-full ${
-                      darkMode
-                        ? "bg-gray-800 text-gray-300"
-                        : "bg-gray-100 text-gray-600"
-                    }`}
-                  >
-                    {language}
-                  </span>
                 </div>
               </div>
             </div>

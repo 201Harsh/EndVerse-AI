@@ -712,7 +712,7 @@ const ChatDashboard = ({
                 ref={inputRef}
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                onKeyDown={handleKeyDown}
+                onKeyDown={handleKeyDown} 
                 placeholder={
                   isTyping
                     ? "EndVerse is responding..."
