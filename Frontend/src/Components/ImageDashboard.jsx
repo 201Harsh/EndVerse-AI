@@ -195,7 +195,7 @@ const ImageDashboard = ({
   const downloadImage = (imageUrl) => {
     const link = document.createElement("a");
     link.href = imageUrl;
-    link.download = `ai-image-${Date.now()}.jpg`;
+    link.download = `EndVerseAI-image-${prompt.slice(0, 15)}-Endgaming.com.jpg`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
