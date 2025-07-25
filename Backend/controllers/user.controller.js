@@ -4,6 +4,19 @@ const UserModel = require("../models/user.model");
 const { validationResult } = require("express-validator");
 const transporter = require("../services/Sendmail.service");
 
+
+module.exports.StartServer = async (req, res) => {
+  try {
+    res.status(200).json({
+      message: "Server started successfully 🚀🚀",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+}
+
 module.exports.registerUser = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {

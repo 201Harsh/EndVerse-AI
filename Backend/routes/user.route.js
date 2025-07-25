@@ -43,4 +43,6 @@ router.post("/logout", authMiddleware.authUser, userController.logoutUser);
 
 router.post("/resend-otp", userController.resendOtp);
 
+router.get("/server", userController.StartServer);
+
 module.exports = router;
