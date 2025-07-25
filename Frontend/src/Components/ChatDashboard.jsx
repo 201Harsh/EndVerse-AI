@@ -30,6 +30,8 @@ const ChatDashboard = ({
   setuserChat,
   hasUserStartedChatting,
   setHasUserStartedChatting,
+  isCollapsed,
+  isMobile,
 }) => {
   const [message, setMessage] = useState("");
   const messagesEndRef = useRef(null);
@@ -589,7 +591,12 @@ const ChatDashboard = ({
         } overflow-hidden`}
       >
         {/* Messages Container */}
-        <div className="flex-1 p-4 chat-box overflow-y-auto h-[calc(100vh-180px)]">
+        <div
+          className={`flex-1 ${
+            isCollapsed && !isMobile ? "ml-16" : isMobile ? "" : "ml-64"
+          }
+          } p-4 chat-box overflow-y-auto h-[calc(100vh-180px)]`}
+        >
           <div className="max-w-4xl mx-auto space-y-3">
             {messages.map((msg, index) => (
               <div
@@ -695,10 +702,8 @@ const ChatDashboard = ({
 
         {/* Chat Input */}
         <div
-          className={`p-3 border-t ${
-            darkMode
-              ? "border-gray-700 bg-gray-800/50"
-              : "border-gray-200 bg-white/50"
+          className={`p-5 ${
+            isCollapsed && !isMobile ? "ml-0" : isMobile ? "" : "ml-64"
           } backdrop-blur-md`}
         >
           <form onSubmit={handleSubmit} className="max-w-4xl mx-auto">

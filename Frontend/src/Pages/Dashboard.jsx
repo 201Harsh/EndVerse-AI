@@ -87,6 +87,8 @@ const Dashboard = () => {
             setuserChat={setuserChat}
             hasUserStartedChatting={hasUserStartedChatting}
             setHasUserStartedChatting={setHasUserStartedChatting}
+            isMobile={isMobile}
+            isCollapsed={isCollapsed}
           />
         );
       case "image":
@@ -95,6 +97,8 @@ const Dashboard = () => {
             darkMode={darkMode}
             toggleDarkMode={toggleDarkMode}
             clearChat={clearChat}
+            isMobile={isMobile}
+            isCollapsed={isCollapsed}
           />
         );
       case "video":
@@ -105,7 +109,7 @@ const Dashboard = () => {
             clearChat={clearChat}
           />
         );
-        case "Code":
+      case "Code":
         return (
           <CodeDashboard
             darkMode={darkMode}
