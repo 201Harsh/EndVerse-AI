@@ -232,10 +232,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
 
-## 🌐 Live Demo
-
-- Experience EndVerse AI at: https://app.endverse.ai
-
 ## 🤝 Contact
 
 - GitHub: https://github.com/201Harsh
