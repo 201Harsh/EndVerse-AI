@@ -85,7 +85,6 @@ const ChatDashboard = ({
           setHasUserStartedChatting(true);
         }
       } catch (error) {
-        console.error("Failed to parse saved messages:", error);
         localStorage.removeItem("chat_messages");
         toast.error("Failed to load chat history", {
           position: "bottom-left",
@@ -160,7 +159,6 @@ const ChatDashboard = ({
               setMessages((prev) => [...prev, newBotMessage]);
             }
           } catch (error) {
-            console.error("Error getting AI response:", error);
             toast.error(
               error.response?.data?.message || "Failed to get AI response",
               {
@@ -274,7 +272,6 @@ const ChatDashboard = ({
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      console.log("File selected:", file.name);
     }
   };
 
