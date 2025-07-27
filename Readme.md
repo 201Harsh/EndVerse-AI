@@ -238,7 +238,7 @@ SOFTWARE.
 
 - Email: support@endverse.ai
 
-- Website: https://endverse.ai
+- Website: [https://endverse.ai](https://endverse-ai.onrender.com)
 
 - Instagram: https://www.instagram.com/201harshs/
 
@@ -301,7 +301,7 @@ stateDiagram-v2
 ## Live Preview
 
 - see the site live at
-  *https://emoaichatbot.onrender.com/*
+  *https://endverse-ai.onrender.com*
 
 ---
 
