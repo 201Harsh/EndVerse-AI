@@ -2,6 +2,38 @@ const { GoogleGenAI } = require("@google/genai");
 
 const ai = new GoogleGenAI({ apiKey: process.env.CHAT_AI_API_KEY });
 
+// Simple text filter function
+function filterResponse(text) {
+  if (!text) return "";
+
+  let filtered = text;
+
+  // Remove EndVerse AI headers / signatures
+  filtered = filtered.replace(/\*\*\*EndVerse AI.*?\*\*\*/gi, "");
+  filtered = filtered.replace(/EndVerse AI v\d+(\.\d+)? \(Powered by EndGaming AI\)/gi, "");
+
+  // Remove Markdown headers (##, ###, etc.)
+  filtered = filtered.replace(/#+\s?/g, "");
+
+  // Remove markdown bold/italic markers (** or *)
+  filtered = filtered.replace(/\*\*(.*?)\*\*/g, "$1");
+  filtered = filtered.replace(/\*(.*?)\*/g, "$1");
+
+  // Remove HTML tags (like <a>, <b>, etc.)
+  filtered = filtered.replace(/<\/?[^>]+(>|$)/g, "");
+
+  // Remove emojis (optional – comment this out if you want to keep them)
+  filtered = filtered.replace(
+    /([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|\uD83E[\uDD00-\uDDFF])/g,
+    ""
+  );
+
+  // Trim spaces/newlines
+  filtered = filtered.trim();
+
+  return filtered;
+}
+
 async function main({ prompt, UsersName }) {
   const response = await ai.models.generateContent({
     model: "gemini-2.5-flash",
@@ -119,8 +151,11 @@ Because they make up everything!
       `,
     },
   });
+
   const answer = response.text;
-  return answer;
+  const filteredAnswer = filterResponse(answer);
+
+  return filteredAnswer;
 }
 
 module.exports = main;
