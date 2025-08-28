@@ -350,7 +350,6 @@ const ImageDashboard = ({
               <textarea
                 value={prompt}
                 autoFocus
-                maxLength={200}
                 onChange={(e) => setPrompt(e.target.value)}
                 className={`w-full resize-none ${
                   isMobile ? "h-24" : "h-32"
