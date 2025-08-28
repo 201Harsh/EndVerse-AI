@@ -358,7 +358,7 @@ const ImageDashboard = ({
                     ? "bg-gray-700 border-gray-600"
                     : "bg-gray-100 border-gray-300"
                 } border focus:ring-2 focus:ring-indigo-500 focus:border-transparent`}
-                placeholder="A majestic dragon soaring over mountain peaks..."
+                placeholder="A majestic dragon soaring over mountain peaks with a beautiful sunset in the background..."
               />
             </div>
 
