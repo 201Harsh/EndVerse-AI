@@ -45,7 +45,7 @@ module.exports.registerUser = async (req, res) => {
     });
 
     const info = await transporter.sendMail({
-      from: `"EndVerse AI" <${process.env.SENDERS_MAIL}>`,
+      from: "EndGaming <endgamingai2@gmail.com>",
       to: email,
       subject: "🔐 Your EndVerse AI Verification Code",
       html: `
@@ -195,7 +195,7 @@ module.exports.resendOtp = async (req, res) => {
     const otp = String(Math.floor(1000 + Math.random() * 9000));
 
     const info = await transporter.sendMail({
-      from: process.env.SENDERS_MAIL, // Sender address
+      from: "EndGaming<endgamingai2@gmail.com>", // Sender address
       to: email,
       subject: "🔐 Your EndVerse AI Verification Code",
       html: `
